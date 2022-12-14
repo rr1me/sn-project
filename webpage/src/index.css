@@ -1,0 +1,31 @@
+body {
+  /*background:*/
+  /*        linear-gradient(#10101087 30%, rgba(16, 16, 16, 0.2) 50%),*/
+  /*        linear-gradient(90deg, rgba(255, 158, 158, 0.03), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.03)),*/
+  /*        #303031;*/
+
+  background:
+          linear-gradient(#10101087 30%, rgba(16, 16, 16, 0.2) 50%),
+          linear-gradient(90deg, rgba(255, 158, 158, 0.03), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.03)), #303031;
+  background-size: 100% 3px, 6px 100%;
+
+
+  background-size: 100% 3px, 6px 100%;
+
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/*body:after{*/
+/*  background-color: #3030e1;*/
+/*  animation: flicker 0.30s infinite;*/
+/*}*/
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
