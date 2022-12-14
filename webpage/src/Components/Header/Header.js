@@ -6,15 +6,21 @@ const Header = () => {
         <div className='header'>
             <div className='actualHeader'>
                 <img src={logo} className='logo'/>
-                <div>
-                    complex of game servers and other bullshit
+                <div className='desc'>
+                    <b>
+                        100RAD <br/>
+                        комплекс игровых серверов
+                    </b>
+                    <hr className='separator'/>
+                    100RAD V 1.1 <br/>
+                    (c)2022
                 </div>
             </div>
             <div className='navigation'>
-                <div>гавная</div>
-                <div>банхаммер</div>
-                <div>клиент для клиентуры</div>
-                <div>притон ебаный</div>
+                <div>главная</div>
+                <div>список блокировок</div>
+                <div>скачать клиент</div>
+                <div>discord</div>
             </div>
         </div>
     )

@@ -1,4 +1,40 @@
 .header
 
-  .logo
-    height: 140px
+  .actualHeader
+    .logo
+      height: 140px
+
+    display: flex
+    gap: 30px
+    padding: 0 25px
+
+    .desc
+      padding-top: 30px
+
+    .separator
+      background-color: var(--color-green)
+      border-color: var(--color-green)
+      height: 1px
+      width: 600px
+
+  .navigation
+    cursor: pointer
+    padding: 25px 15px 40px
+
+    display: flex
+    gap: 60px
+
+    *
+      z-index: 1
+      color: white
+
+      &:before
+        content: '['
+        //color: white
+        color: var(--color-green)
+        padding-right: 12px
+      &:after
+        content: ']'
+        //color: white
+        color: var(--color-green)
+        padding-left: 12px

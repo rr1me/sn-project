@@ -1,4 +1,4 @@
-import './App.css';
+import './App.sass';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import ElementWrapper from "./Components/ElementWrapper/ElementWrapper";
 import Home from "./Components/Home/Home";
