@@ -1,12 +1,13 @@
 .elementWrapper
   font: 1.4em 'HighWave'
-  //height: 100%
   color: var(--color-green)
   padding: 40px
-  //height: auto
+  overflow: hidden
   height: 100%
+  //animation: scroll 5s infinite
 
   @mixin fixed
+    pointer-events: none
     content: ''
     position: fixed
     top: 0
@@ -15,12 +16,11 @@
     left: 0
 
   .content
-    height: 20%
-    //height: 0
-    //animation: scroll 5s infinite
-    //flex-direction: column
-    //display: flex
+    animation: scroll 5s 1
     overflow: hidden
+    //height: 1%
+    //height: 10%
+    //animation: scroll 5s 1
 
   &:before
     @include fixed
@@ -42,8 +42,8 @@
 
 @keyframes scroll
   0%
-    height: 5%
+    height: 0
   100%
-    height: 05%
-    background-color: white
+    height: 100%
+    //background-color: white
 
