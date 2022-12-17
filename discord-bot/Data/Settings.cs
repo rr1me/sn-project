@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace myGreeterBot.Data;
+namespace discordBot.Data;
 
 public class Settings
 {

@@ -1,8 +1,8 @@
 ﻿using Discord;
 using Discord.WebSocket;
-using myGreeterBot.Data;
+using discordBot.Data;
 
-namespace myGreeterBot;
+namespace discordBot;
 
 public class Miscellaneous
 {
