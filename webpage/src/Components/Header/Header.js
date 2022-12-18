@@ -1,5 +1,6 @@
 import logo from './sn-logo.png';
 import './Header.sass';
+import {Link} from "react-router-dom";
 
 const Header = () => {
     return (
@@ -17,10 +18,10 @@ const Header = () => {
                 </div>
             </div>
             <div className='navigation'>
-                <div>главная</div>
-                <div>список блокировок</div>
-                <div>скачать клиент</div>
-                <div>discord</div>
+                <Link to='/'>главная</Link>
+                <Link to='/12'>список блокировок</Link>
+                <Link to='#'>скачать клиент</Link>
+                <Link to='#'>discord</Link>
             </div>
         </div>
     )

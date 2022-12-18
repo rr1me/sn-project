@@ -9,9 +9,18 @@ function App() {
       <Routes>
         <Route path="/" element={<ElementWrapper> <Home/> </ElementWrapper>}/>
         <Route path="/banlist" element={<ElementWrapper> <div>banlist</div> </ElementWrapper>}/>
+
+
+        <Route path="*" element={<ElementWrapper>404?</ElementWrapper>}/>
       </Routes>
     </BrowserRouter>
   );
 }
+
+// const PageNotFound = () => {
+//     return (
+//         404 mate
+//     )
+// }
 
 export default App;
