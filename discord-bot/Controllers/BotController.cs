@@ -6,7 +6,7 @@ namespace discordBot.Controllers;
 [ApiController]
 public class BotController : ControllerBase
 {
-    [Authorize]
+    // [Authorize]
     [HttpGet("/")]
     public IActionResult Index()
     {

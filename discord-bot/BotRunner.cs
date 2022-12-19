@@ -88,38 +88,38 @@ public class BotRunner
             Console.WriteLine("slashCmd");
         };
         
-        JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+        // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         builder.Services.AddControllers();
 
-        builder.Services.AddAuthentication(config =>
-            {
-                config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                config.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            })
-            .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
-            {
-                options.Authority = "https://localhost:7274";
-                options.ClientId = "platformnet6";
-                options.ClientSecret = "123456789";
-                options.ResponseType = "code";
-                options.CallbackPath = "/signin-oidc";
-                options.SaveTokens = true;
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = false,
-                    SignatureValidator = delegate(string token, TokenValidationParameters validationParameters)
-                    {
-                        var jwt = new JwtSecurityToken(token);
-                        return jwt;
-                    },
-                };
-            });
+        // builder.Services.AddAuthentication(config =>
+        //     {
+        //         config.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        //         config.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+        //     })
+        //     .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+        //     .AddOpenIdConnect(OpenIdConnectDefaults.AuthenticationScheme, options =>
+        //     {
+        //         options.Authority = "https://localhost:7274";
+        //         options.ClientId = "platformnet6";
+        //         options.ClientSecret = "123456789";
+        //         options.ResponseType = "code";
+        //         options.CallbackPath = "/signin-oidc";
+        //         options.SaveTokens = true;
+        //         options.TokenValidationParameters = new TokenValidationParameters
+        //         {
+        //             ValidateIssuerSigningKey = false,
+        //             SignatureValidator = delegate(string token, TokenValidationParameters validationParameters)
+        //             {
+        //                 var jwt = new JwtSecurityToken(token);
+        //                 return jwt;
+        //             },
+        //         };
+        //     });
 
         var app = builder.Build();
         app.MapControllers();
         
-        app.UseAuthentication();
+        // app.UseAuthentication();
         // app.UseAuthorization();
         await app.RunAsync();
 

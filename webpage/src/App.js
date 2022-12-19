@@ -17,10 +17,4 @@ function App() {
   );
 }
 
-// const PageNotFound = () => {
-//     return (
-//         404 mate
-//     )
-// }
-
 export default App;

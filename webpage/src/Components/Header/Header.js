@@ -19,8 +19,8 @@ const Header = () => {
             </div>
             <div className='navigation'>
                 <Link to='/'>главная</Link>
-                <Link to='/12'>список блокировок</Link>
-                <Link to='#'>скачать клиент</Link>
+                <Link to='/banlist'>список блокировок</Link>
+                <Link to='/123'>скачать клиент</Link>
                 <Link to='#'>discord</Link>
             </div>
         </div>
