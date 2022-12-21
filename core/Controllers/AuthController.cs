@@ -19,8 +19,9 @@ public class AuthController : ControllerBase
 
     [HttpPost("/login")]
     [AllowAnonymous]
-    public IActionResult Login(UserModel user)
+    public IActionResult Login([FromForm]UserModel user)
     {
+        // HttpContext.Response.Redirect();
         var isAuthenticated = _authenticationHandler.Authenticate(user, HttpContext);
         if (!isAuthenticated)
             return Unauthorized("Authentication error");

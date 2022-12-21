@@ -6,15 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<GatewayAuthenticationHandler>();
-
 builder.Services.AddDbContext<DatabaseContext>(x =>
 {
-    var serverVersion = ServerVersion.AutoDetect("server=localhost;user=root;password=root;database=sntestdb");
-    x
-        .UseMySql("server=localhost;user=root;password=root;database=sntestdb", new MySqlServerVersion(new Version(8, 0, 31)))
-        .LogTo(Console.WriteLine, LogLevel.Information);
-});
+    var connectionString = "server=localhost;user=root;password=root;database=sntestdb";
+    var serverVersion = ServerVersion.AutoDetect(connectionString);
+    x.UseMySql(connectionString, serverVersion);
+}, ServiceLifetime.Singleton);
+
+builder.Services.AddSingleton<GatewayAuthenticationHandler>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -56,7 +55,10 @@ app.Use(async (context, next) =>
 app.UseAuthentication();
 app.UseAuthorization();
 
-// var db = app.Services.CreateScope().ServiceProvider.GetService<DatabaseContext>();
+// var db = app.Services.GetRequiredService<DatabaseContext>();
 // db.Database.EnsureCreated();
+// var user = new UserEntity("user", BCrypt.Net.BCrypt.HashPassword("123"), Roles.ADMIN);
+// db.Users.Add(user);
+// db.SaveChanges();
 
 app.Run();
