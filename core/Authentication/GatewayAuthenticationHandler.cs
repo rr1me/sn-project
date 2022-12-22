@@ -1,7 +1,6 @@
 ﻿using System.Security.Cryptography;
 using core.Controllers;
 using core.Data;
-using JWT;
 using JWT.Algorithms;
 using JWT.Builder;
 
@@ -10,10 +9,12 @@ namespace core.Authentication;
 public class GatewayAuthenticationHandler
 {
     private readonly DatabaseContext _db;
+    private readonly IConfiguration _config;
 
-    public GatewayAuthenticationHandler(DatabaseContext db)
+    public GatewayAuthenticationHandler(DatabaseContext db, IConfiguration config)
     {
         _db = db;
+        _config = config;
     }
 
     public bool Authenticate(UserModel userModel, HttpContext context)
@@ -26,18 +27,27 @@ public class GatewayAuthenticationHandler
         var refreshToken = JwtBuilder.Create().WithAlgorithm(new RS256Algorithm(RSA.Create(), RSA.Create()))
             .AddClaim("exp", refreshTokenExpires.ToUnixTimeSeconds())
             .Encode();
-
         
-        var rsa = RSA.Create();
-        var accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
-        var accessToken = JwtBuilder.Create().WithAlgorithm(new RS256Algorithm(rsa, rsa))
-            .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
-            .AddClaim("user", user.Login)
-            .AddClaim("role", user.Role.ToString())
-            .MustVerifySignature()
-            .Encode();
-        // Console.WriteLine(rsa.ExportRSAPublicKeyPem());
-        // Console.WriteLine(rsa.ExportRSAPrivateKeyPem());
+        // var ecKeysAT = _config.GetSection("ECKeysAT").GetChildren().ToList();
+        // var privateECKeyForAT = ecKeysAT[0].Value;
+        // var publicECKeyForAT = ecKeysAT[1].Value;
+        // Console.WriteLine(privateECKeyForAT);
+        // Console.WriteLine(publicECKeyForAT);
+        //
+        // var publicEcDsaForAT = ECDsa.Create();
+        // publicEcDsaForAT.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicECKeyForAT), out _);
+        //
+        // var privateEcDsaForAT = ECDsa.Create();
+        // privateEcDsaForAT.ImportECPrivateKey(Convert.FromBase64String(privateECKeyForAT), out _);
+        //
+        //
+        // var accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
+        // var accessToken = JwtBuilder.Create().WithAlgorithm(new ES256Algorithm(publicEcDsaForAT, privateEcDsaForAT))
+        //     .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
+        //     .AddClaim("user", user.Login)
+        //     .AddClaim("role", user.Role.ToString())
+        //     .MustVerifySignature()
+        //     .Encode();
 
         var refreshTokenCookieOptions = new CookieOptions
         {
@@ -53,7 +63,7 @@ public class GatewayAuthenticationHandler
             Secure = true,
             Expires = accessTokenExpires
         };
-        context.Response.Cookies.Append("accessToken", accessToken, accessTokenCookieOptions);
+        context.Response.Cookies.Append("accessToken", GenerateAccessToken(user), accessTokenCookieOptions);
         
         user.RefreshToken = refreshToken;
         _db.Users.Update(user);
@@ -65,5 +75,35 @@ public class GatewayAuthenticationHandler
         // Console.WriteLine(json);
 
         return true;
+    }
+
+    private string GenerateAccessToken(UserEntity user)
+    {
+        var ecKeysAT = _config.GetSection("ECKeysAT").GetChildren().ToList();
+        var privateECKeyForAT = ecKeysAT[0].Value;
+        var publicECKeyForAT = ecKeysAT[1].Value;
+        Console.WriteLine(privateECKeyForAT);
+        Console.WriteLine(publicECKeyForAT);
+
+        var publicEcDsaForAT = ECDsa.Create();
+        publicEcDsaForAT.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicECKeyForAT), out _);
+
+        var privateEcDsaForAT = ECDsa.Create();
+        privateEcDsaForAT.ImportECPrivateKey(Convert.FromBase64String(privateECKeyForAT), out _);
+        
+        var accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
+        var accessToken = JwtBuilder.Create().WithAlgorithm(new ES256Algorithm(publicEcDsaForAT, privateEcDsaForAT))
+            .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
+            .AddClaim("user", user.Login)
+            .AddClaim("role", user.Role.ToString())
+            .MustVerifySignature()
+            .Encode();
+        
+        return accessToken;
+    }
+
+    private string GenerateRefreshToken(UserEntity user)
+    {
+        return "1";
     }
 }
