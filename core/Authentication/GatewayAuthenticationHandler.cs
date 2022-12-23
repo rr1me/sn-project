@@ -27,27 +27,6 @@ public class GatewayAuthenticationHandler
         var refreshToken = JwtBuilder.Create().WithAlgorithm(new RS256Algorithm(RSA.Create(), RSA.Create()))
             .AddClaim("exp", refreshTokenExpires.ToUnixTimeSeconds())
             .Encode();
-        
-        // var ecKeysAT = _config.GetSection("ECKeysAT").GetChildren().ToList();
-        // var privateECKeyForAT = ecKeysAT[0].Value;
-        // var publicECKeyForAT = ecKeysAT[1].Value;
-        // Console.WriteLine(privateECKeyForAT);
-        // Console.WriteLine(publicECKeyForAT);
-        //
-        // var publicEcDsaForAT = ECDsa.Create();
-        // publicEcDsaForAT.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicECKeyForAT), out _);
-        //
-        // var privateEcDsaForAT = ECDsa.Create();
-        // privateEcDsaForAT.ImportECPrivateKey(Convert.FromBase64String(privateECKeyForAT), out _);
-        //
-        //
-        // var accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
-        // var accessToken = JwtBuilder.Create().WithAlgorithm(new ES256Algorithm(publicEcDsaForAT, privateEcDsaForAT))
-        //     .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
-        //     .AddClaim("user", user.Login)
-        //     .AddClaim("role", user.Role.ToString())
-        //     .MustVerifySignature()
-        //     .Encode();
 
         var refreshTokenCookieOptions = new CookieOptions
         {
@@ -57,27 +36,24 @@ public class GatewayAuthenticationHandler
         };
         context.Response.Cookies.Append("refreshToken", refreshToken, refreshTokenCookieOptions);
 
+        
+        var accessToken = GenerateAccessToken(user, out var accessTokenExpires);
         var accessTokenCookieOptions = new CookieOptions()
         {
             HttpOnly = true,
             Secure = true,
             Expires = accessTokenExpires
         };
-        context.Response.Cookies.Append("accessToken", GenerateAccessToken(user), accessTokenCookieOptions);
+        context.Response.Cookies.Append("accessToken", accessToken, accessTokenCookieOptions);
         
         user.RefreshToken = refreshToken;
         _db.Users.Update(user);
         _db.SaveChanges();
 
-        // var p = ValidationParameters.Default;
-        // var json = JwtValidator.Create().WithAlgorithm(new RS256Algorithm(rsa, rsa)).WithValidationParameters()
-        //     .Decode(accessToken);
-        // Console.WriteLine(json);
-
         return true;
     }
 
-    private string GenerateAccessToken(UserEntity user)
+    private string GenerateAccessToken(UserEntity user, out DateTimeOffset accessTokenExpires)
     {
         var ecKeysAT = _config.GetSection("ECKeysAT").GetChildren().ToList();
         var privateECKeyForAT = ecKeysAT[0].Value;
@@ -91,7 +67,7 @@ public class GatewayAuthenticationHandler
         var privateEcDsaForAT = ECDsa.Create();
         privateEcDsaForAT.ImportECPrivateKey(Convert.FromBase64String(privateECKeyForAT), out _);
         
-        var accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
+        accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
         var accessToken = JwtBuilder.Create().WithAlgorithm(new ES256Algorithm(publicEcDsaForAT, privateEcDsaForAT))
             .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
             .AddClaim("user", user.Login)
