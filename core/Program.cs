@@ -14,6 +14,7 @@ builder.Services.AddDbContext<DatabaseContext>(x =>
 }, ServiceLifetime.Singleton);
 
 builder.Services.AddSingleton<GatewayAuthenticationHandler>();
+builder.Services.AddSingleton<JwtHandler>();
 
 builder.Services.AddAuthentication(options =>
 {

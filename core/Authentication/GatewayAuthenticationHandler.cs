@@ -1,33 +1,26 @@
-﻿using System.Security.Cryptography;
-using core.Controllers;
+﻿using core.Controllers;
 using core.Data;
-using JWT.Algorithms;
-using JWT.Builder;
 
 namespace core.Authentication;
 
 public class GatewayAuthenticationHandler
 {
     private readonly DatabaseContext _db;
-    private readonly IConfiguration _config;
+    private readonly JwtHandler _jwtHandler;
 
-    public GatewayAuthenticationHandler(DatabaseContext db, IConfiguration config)
+    public GatewayAuthenticationHandler(DatabaseContext db, JwtHandler jwtHandler)
     {
         _db = db;
-        _config = config;
+        _jwtHandler = jwtHandler;
     }
 
     public bool Authenticate(UserModel userModel, HttpContext context)
     {
-        var user = _db.Users.FirstOrDefault(x =>x .Login == userModel.Login);
+        var user = _db.Users.FirstOrDefault(x =>x .Username == userModel.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(userModel.Password, user.Password))
             return false;
 
-        var refreshTokenExpires = DateTimeOffset.UtcNow.AddDays(7);
-        var refreshToken = JwtBuilder.Create().WithAlgorithm(new RS256Algorithm(RSA.Create(), RSA.Create()))
-            .AddClaim("exp", refreshTokenExpires.ToUnixTimeSeconds())
-            .Encode();
-
+        var refreshToken = _jwtHandler.GenerateRefreshToken(user, out var refreshTokenExpires);
         var refreshTokenCookieOptions = new CookieOptions
         {
             HttpOnly = true,
@@ -37,8 +30,8 @@ public class GatewayAuthenticationHandler
         context.Response.Cookies.Append("refreshToken", refreshToken, refreshTokenCookieOptions);
 
         
-        var accessToken = GenerateAccessToken(user, out var accessTokenExpires);
-        var accessTokenCookieOptions = new CookieOptions()
+        var accessToken = _jwtHandler.GenerateAccessToken(user, out var accessTokenExpires);
+        var accessTokenCookieOptions = new CookieOptions
         {
             HttpOnly = true,
             Secure = true,
@@ -52,34 +45,50 @@ public class GatewayAuthenticationHandler
 
         return true;
     }
+    
+    // public void RevokeRefreshToken(user)
 
-    private string GenerateAccessToken(UserEntity user, out DateTimeOffset accessTokenExpires)
-    {
-        var ecKeysAT = _config.GetSection("ECKeysAT").GetChildren().ToList();
-        var privateECKeyForAT = ecKeysAT[0].Value;
-        var publicECKeyForAT = ecKeysAT[1].Value;
-        Console.WriteLine(privateECKeyForAT);
-        Console.WriteLine(publicECKeyForAT);
-
-        var publicEcDsaForAT = ECDsa.Create();
-        publicEcDsaForAT.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicECKeyForAT), out _);
-
-        var privateEcDsaForAT = ECDsa.Create();
-        privateEcDsaForAT.ImportECPrivateKey(Convert.FromBase64String(privateECKeyForAT), out _);
-        
-        accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
-        var accessToken = JwtBuilder.Create().WithAlgorithm(new ES256Algorithm(publicEcDsaForAT, privateEcDsaForAT))
-            .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
-            .AddClaim("user", user.Login)
-            .AddClaim("role", user.Role.ToString())
-            .MustVerifySignature()
-            .Encode();
-        
-        return accessToken;
-    }
-
-    private string GenerateRefreshToken(UserEntity user)
-    {
-        return "1";
-    }
+    // public string GenerateAccessToken(UserEntity user, out DateTimeOffset accessTokenExpires)
+    // {
+    //     var ecKeys = _config.GetSection("ECKeysForAccessToken").GetChildren().ToList();
+    //     var privateEcKey = ecKeys[0].Value!;
+    //     var publicEcKey = ecKeys[1].Value!;
+    //
+    //     var publicEcDsa = ECDsa.Create();
+    //     publicEcDsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicEcKey), out _);
+    //
+    //     var privateEcDsa = ECDsa.Create();
+    //     privateEcDsa.ImportECPrivateKey(Convert.FromBase64String(privateEcKey), out _);
+    //     
+    //     accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
+    //     var accessToken = JwtBuilder.Create().WithAlgorithm(new ES256Algorithm(publicEcDsa, privateEcDsa))
+    //         .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
+    //         .AddClaim("user", user.Username)
+    //         .AddClaim("role", user.Role.ToString())
+    //         .MustVerifySignature()
+    //         .Encode();
+    //     
+    //     return accessToken;
+    // }
+    //
+    // private string GenerateRefreshToken(UserEntity user, out DateTimeOffset refreshTokenExpires)
+    // {
+    //     var ecKeys = _config.GetSection("ECKeysRefreshToken").GetChildren().ToList();
+    //     var privateEcKey = ecKeys[0].Value!;
+    //     var publicEcKey = ecKeys[1].Value!;
+    //
+    //     var publicEcDsa = ECDsa.Create();
+    //     publicEcDsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(publicEcKey), out _);
+    //
+    //     var privateEcDsa = ECDsa.Create();
+    //     privateEcDsa.ImportECPrivateKey(Convert.FromBase64String(privateEcKey), out _);
+    //     
+    //     refreshTokenExpires = DateTimeOffset.UtcNow.AddDays(7);
+    //     var refreshToken = JwtBuilder.Create().WithAlgorithm(new ES256Algorithm(publicEcDsa, privateEcDsa))
+    //         .AddClaim("exp", refreshTokenExpires.ToUnixTimeSeconds())
+    //         .AddClaim("username", user.Username)
+    //         .Encode();
+    //     
+    //     return refreshToken;
+    // }
 }
