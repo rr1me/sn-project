@@ -18,7 +18,7 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("/login")]
-    [AllowAnonymous]
+    // [AllowAnonymous]
     public IActionResult Login([FromForm]UserModel user)
     {
         // HttpContext.Response.Redirect();
@@ -27,6 +27,13 @@ public class AuthController : ControllerBase
             return Unauthorized("Authentication error");
         
         return Ok("cool");
+    }
+
+    [HttpPost("/try")]
+    [Authorize(Roles = "Admin")]
+    public IActionResult TryItOn()
+    {
+        return Ok("hi");
     }
 }
 

@@ -2,6 +2,7 @@ using core;
 using core.Authentication;
 using core.Data;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,10 +19,17 @@ builder.Services.AddSingleton<JwtHandler>();
 
 builder.Services.AddAuthentication(options =>
 {
+    // options.DefaultScheme = "";
     options.DefaultAuthenticateScheme = "GatewayAuthScheme";
 }).AddScheme<GatewayAuthScheme, AuthenticationMiddleware>("GatewayAuthScheme", null);
-builder.Services.AddAuthorization(x =>
-    x.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build());
+builder.Services.AddAuthorization(
+    x =>
+    {
+        x.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
+        x.AddPolicy("User", policy => policy.RequireRole("User"));
+    }
+    // x.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()
+    );
 
 builder.Services.AddControllers();
 
