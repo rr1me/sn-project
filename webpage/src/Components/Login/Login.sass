@@ -1,0 +1,57 @@
+.login
+  padding-block: 10px
+  //font: 1.4em 'HighWave'
+  display: flex
+  flex-direction: column
+
+  gap: 10px
+  //align-items: flex-start
+
+  padding-left: 300px
+  width: 350px
+  ::-webkit-input-placeholder
+    color: #809f80
+
+  *
+    letter-spacing: 3px
+    //background-color: rgba(9, 51, 0, 0.23)
+    background-color: rgba(9, 51, 0, 0.32)
+    z-index: 1
+    padding: 11px
+    border-radius: 5px
+    font: 800 14px 'HighWave'
+
+    border: 2px solid #005000
+    //border: none
+    //box-shadow: 0 0 5px #00dd00, 0 0 35px #005d00
+    box-shadow: 0 0 3px #00dd00, 0 0 20px #005d00
+    transition: 0.7s ease
+
+
+  .input
+    color: #00dd00
+    //border: none
+
+    outline: none
+
+    //font: 800 16px 'HighWave'
+    //padding: 10px
+    //::-webkit-input-placeholder
+    //  color: #005d00
+    &:focus
+      box-shadow: none
+
+  .button
+    cursor: pointer
+    color: white
+    //border: none
+    outline: none
+    //padding: 10px
+
+
+    &:hover
+      box-shadow: none
+      border-color: #009b00
+    &:active
+      transition: 0.1s ease
+      border-color: #003600

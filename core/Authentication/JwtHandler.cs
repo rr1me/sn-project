@@ -1,6 +1,5 @@
 ﻿using System.Security.Cryptography;
 using core.Data;
-using JWT;
 using JWT.Algorithms;
 using JWT.Builder;
 
@@ -61,7 +60,7 @@ public class JwtHandler
 
     public IDictionary<string, object> DecodeToken(string token, TokenType type)
     {
-        var algorithm = type == TokenType.ACCESS ? accessTokenAlgorithm : refreshTokenAlgorithm;
+        var algorithm = type == TokenType.Access ? accessTokenAlgorithm : refreshTokenAlgorithm;
 
         return JwtBuilder.Create()
             .WithAlgorithm(algorithm)
@@ -82,7 +81,7 @@ public class JwtHandler
 
     public bool TryDecodeToken(string token, TokenType type, out IDictionary<string, object> payload)
     {
-        var algorithm = type == TokenType.ACCESS ? accessTokenAlgorithm : refreshTokenAlgorithm;
+        var algorithm = type == TokenType.Access ? accessTokenAlgorithm : refreshTokenAlgorithm;
 
         try
         {
@@ -93,7 +92,7 @@ public class JwtHandler
         }
         catch (Exception e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine("Decode exception: " + e.Message);
             payload = null;
             return false;
         }
@@ -104,6 +103,6 @@ public class JwtHandler
 
 public enum TokenType
 {
-    ACCESS,
-    REFRESH
+    Access,
+    Refresh
 }

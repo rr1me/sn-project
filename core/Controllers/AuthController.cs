@@ -9,24 +9,36 @@ namespace core.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly GatewayAuthenticationHandler _authenticationHandler;
-    private readonly DatabaseContext _db;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public AuthController(GatewayAuthenticationHandler authenticationHandler, DatabaseContext db)
+    public AuthController(GatewayAuthenticationHandler authenticationHandler, IServiceScopeFactory scopeFactory)
     {
         _authenticationHandler = authenticationHandler;
-        _db = db;
+        _scopeFactory = scopeFactory;
+        // _db = _db = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
     }
 
     [HttpPost("/login")]
     // [AllowAnonymous]
-    public IActionResult Login([FromForm]UserModel user)
+    public IActionResult Login([FromBody]UserModel userModel)
     {
         // HttpContext.Response.Redirect();
-        var isAuthenticated = _authenticationHandler.Authenticate(user, HttpContext);
+        var isAuthenticated = _authenticationHandler.Authenticate(userModel, HttpContext, out var user);
         if (!isAuthenticated)
             return Unauthorized("Authentication error");
         
-        return Ok("cool");
+        return Ok(new
+        {
+            username = user!.Username,
+            role = user.Role
+        });
+    }
+
+    [HttpGet("/logout")]
+    public IActionResult Logout()
+    {
+        _authenticationHandler.RevokeRefreshToken(HttpContext);
+        return Ok("Succeed");
     }
 
     [HttpPost("/try")]

@@ -22,6 +22,8 @@ const Header = () => {
                 <Link to='/banlist'>список блокировок</Link>
                 <Link to='/123'>скачать клиент</Link>
                 <Link to='#'>discord</Link>
+                <Link to='/login'>вход</Link>
+                {/*<Link to='#'>регистратура</Link>*/}
             </div>
         </div>
     )

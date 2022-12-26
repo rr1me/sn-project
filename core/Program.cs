@@ -12,14 +12,15 @@ builder.Services.AddDbContext<DatabaseContext>(x =>
     var connectionString = "server=localhost;user=root;password=root;database=sntestdb";
     var serverVersion = ServerVersion.AutoDetect(connectionString);
     x.UseMySql(connectionString, serverVersion);
-}, ServiceLifetime.Singleton);
+}
+    // , ServiceLifetime.Singleton
+    );
 
 builder.Services.AddSingleton<GatewayAuthenticationHandler>();
 builder.Services.AddSingleton<JwtHandler>();
 
 builder.Services.AddAuthentication(options =>
 {
-    // options.DefaultScheme = "";
     options.DefaultAuthenticateScheme = "GatewayAuthScheme";
 }).AddScheme<GatewayAuthScheme, AuthenticationMiddleware>("GatewayAuthScheme", null);
 builder.Services.AddAuthorization(
@@ -28,8 +29,7 @@ builder.Services.AddAuthorization(
         x.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
         x.AddPolicy("User", policy => policy.RequireRole("User"));
     }
-    // x.FallbackPolicy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build()
-    );
+);
 
 builder.Services.AddControllers();
 
@@ -64,9 +64,9 @@ app.Use(async (context, next) =>
 app.UseAuthentication();
 app.UseAuthorization();
 
-// var db = app.Services.GetRequiredService<DatabaseContext>();
+// var db = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
 // db.Database.EnsureCreated();
-// var user = new UserEntity("user", BCrypt.Net.BCrypt.HashPassword("123"), Roles.ADMIN);
+// var user = new UserEntity("2nduser", BCrypt.Net.BCrypt.HashPassword("321"), Roles.User);
 // db.Users.Add(user);
 // db.SaveChanges();
 
