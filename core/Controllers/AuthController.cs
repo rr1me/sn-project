@@ -41,6 +41,13 @@ public class AuthController : ControllerBase
         return Ok("Succeed");
     }
 
+    [HttpGet("/validate")]
+    [Authorize]
+    public IActionResult Validate()
+    {
+        return Ok("All cool");
+    }
+
     [HttpPost("/try")]
     [Authorize(Roles = "Admin")]
     public IActionResult TryItOn()

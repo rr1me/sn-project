@@ -1,8 +1,7 @@
 import axios from "axios";
 
-export const authenticate = (username, password) => {
-    return axios.post('/api/login', {
-        username: username,
-        password: password
-    });
-}
+export const login = payload => axios.post('/api/login', payload);
+
+export const logout = () => axios.get('/api/logout');
+
+export const validateCredentials = () => axios.get('/api/validate');

@@ -18,6 +18,10 @@ code {
   font-family: 'HighWave';
   src: url('./fonts/HighWave.otf');
 }
+@font-face {
+  font-family: 'ScientificCalculator';
+  src: url('./fonts/ScientificCalculator.ttf');
+}
 
 html, body, body>div{
   margin: 0;
