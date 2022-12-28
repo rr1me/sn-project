@@ -1,5 +1,6 @@
 import {configureStore} from "@reduxjs/toolkit";
 import authSlice from "./authSlice";
+import embedSlice from "./embedSlice";
 
 const authMiddleware = store => next => action => {
     const f = '/fulfilled';
@@ -13,7 +14,7 @@ const authMiddleware = store => next => action => {
 };
 
 const store = configureStore({
-    reducer :{authSlice},
+    reducer :{authSlice, embedSlice},
     middleware: (defMiddleware) => defMiddleware().concat(authMiddleware)
 });
 

@@ -1,5 +1,23 @@
 \:root
   --color-green: #00dd00
-  --color-dark-green: #003600
+  --color-dark-green: rgba(0, 54, 0, 0.44)
   --bg-color-extradark-green: rgba(9, 51, 0, 0.32)
   --border-radius: 5px
+
+.btn
+  cursor: pointer
+  background-color: var(--color-dark-green)
+  border-radius: var(--border-radius)
+
+  border: none
+  box-shadow: 0 0 5px var(--color-green)
+  color: white
+
+  font-family: HighWave, serif
+  font-weight: 600
+
+  transition: 150ms ease
+  &:hover
+    z-index: 1
+  &:active
+    transform: scale(102%)

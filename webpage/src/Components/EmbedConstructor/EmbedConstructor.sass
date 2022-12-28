@@ -7,5 +7,76 @@
     gap: 15px
 
     width: 40%
+
+    .colorPicker
+      z-index: 1
+      width: 100%
+      border: none
+      padding: 0 5px
+      border-radius: var(--border-radius)
+      background-color: var(--bg-color-extradark-green)
+
     .textarea
+      //font: 17px Dited
+      font-size: 14px
+      height: 12px
+
+      z-index: 1
       resize: none
+      padding: 8px
+
+      border: 2px solid green
+      background-color: var(--bg-color-extradark-green)
+      border-radius: var(--border-radius)
+
+      color: white
+      &:focus
+        outline: none
+        border-color: #939393
+
+
+    .fields
+      display: flex
+      gap: 15px
+      .actualFields
+        display: flex
+        flex-direction: column
+        gap: 15px
+
+        padding: 5px
+        width: 100%
+        .addBtn
+          padding: 10px
+          width: 100%
+          font-size: 16px
+        .fieldBlock
+          display: grid
+          grid-template-rows: 2fr 2fr 1fr
+          grid-template-columns: 10fr 1fr
+          gap: 5px
+
+          overflow: visible
+          .removeBtn
+            grid-column-start: 2
+            grid-column-end: 3
+            grid-row-start: 1
+            grid-row-end: 4
+          > textarea
+            resize: none
+            color: white
+            z-index: 1
+            background-color: var(--bg-color-extradark-green)
+
+            border-radius: var(--border-radius)
+            border: 2px solid #186320
+            outline: none
+
+            padding: 7px
+
+
+
+      .tab
+        background-color: var(--bg-color-extradark-green)
+        border-radius: var(--border-radius)
+        border: 1px solid green
+        width: 15px

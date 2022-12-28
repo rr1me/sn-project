@@ -22,6 +22,10 @@ code {
   font-family: 'ScientificCalculator';
   src: url('./fonts/ScientificCalculator.ttf');
 }
+@font-face {
+  font-family: 'Dited';
+  src: url('./fonts/Dited.otf');
+}
 
 html, body, body>div{
   margin: 0;
