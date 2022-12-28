@@ -12,8 +12,6 @@ const Login = () => {
     const navigate = useNavigate();
     const [error, setError] = useState();
 
-    // const {user} = useSelector(state => state.authSlice);
-
     const handleLoginButton = async () => {
         const username = usernameRef.current.value;
         const password = passRef.current.value;

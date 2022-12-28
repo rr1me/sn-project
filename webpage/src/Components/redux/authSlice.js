@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import {login, logout, validateCredentials} from "../../Services/authService";
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
+import {login, logout} from "../../Services/authService";
 
 export const loginRequest = createAsyncThunk(
     'loginRequest',
@@ -18,18 +18,6 @@ export const logoutRequest = createAsyncThunk(
     }
 );
 
-// export const validateCredentialsRequest = createAsyncThunk(
-//     'validateCredentialsRequest',
-//     async (_, {rejectWithValue}) => {
-//         if (localStorage.getItem('user') !== null) {
-//             const r = await validateCredentials();
-//             console.log(r);
-//             return;
-//         }
-//         return rejectWithValue();
-//     }
-// )
-
 const authSlice = createSlice({
     name: "auth",
     initialState: {
@@ -37,17 +25,8 @@ const authSlice = createSlice({
     },
     reducers: {
         initState(state, action){
-            console.log(action);
             state.user = action.payload;
         }
-        // login(state, action){
-        //     const payload = action.payload;
-        //     console.log(payload);
-        //     state.user = action.payload;
-        // },
-        // logout(state){
-        //     state.user = null;
-        // }
     },
     extraReducers: builder => {
         builder.addCase(loginRequest.fulfilled, (state, action) => {
@@ -60,4 +39,3 @@ const authSlice = createSlice({
 });
 export default authSlice.reducer;
 export const authActions = authSlice.actions;
-// export const {login, logout} = authSlice.actions;

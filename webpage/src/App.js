@@ -3,6 +3,8 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import ElementWrapper from "./Components/ElementWrapper/ElementWrapper";
 import Home from "./Components/Home/Home";
 import Login from "./Components/Login/Login";
+import PersonalAccount from "./Components/PersonalAccount/PersonalAccount";
+import EmbedConstructor from "./Components/EmbedConstructor/EmbedConstructor";
 
 function App() {
   return (
@@ -13,6 +15,9 @@ function App() {
 
 
         <Route path="/login" element={<ElementWrapper> <Login/> </ElementWrapper>}/>
+        <Route path="/me" element={<ElementWrapper> <PersonalAccount/> </ElementWrapper>}/>
+
+        <Route path='/embed' element={<ElementWrapper> <EmbedConstructor/> </ElementWrapper>}/>
 
 
         <Route path="*" element={<ElementWrapper>404?</ElementWrapper>}/>

@@ -1,11 +1,9 @@
 .login
   padding-block: 10px
-  //font: 1.4em 'HighWave'
   display: flex
   flex-direction: column
 
   gap: 10px
-  //align-items: flex-start
 
   padding-left: 300px
   width: 350px
@@ -15,15 +13,13 @@
 
   @mixin borderedElement
     outline: none
-    //letter-spacing: 3px
     background-color: rgba(9, 51, 0, 0.32)
     z-index: 1
     padding: 11px
-    border-radius: 5px
-    //font: 800 14px 'HighWave'
+    border-radius: var(--border-radius)
 
     border: 2px solid #005000
-    box-shadow: 0 0 3px #00dd00, 0 0 20px #005d00
+    box-shadow: 0 0 3px var(--color-green), 0 0 20px #005d00
     transition: 0.7s ease
 
     &:hover
@@ -31,10 +27,9 @@
 
   .input
     letter-spacing: -2px
-    //font-family: 'ScientificCalculator'
     font: 800 14px 'ScientificCalculator' //todo https://fonts-online.ru/fonts/dited not bad font actually
     @include borderedElement
-    color: #00dd00
+    color: var(--color-green)
 
   .button
     letter-spacing: 3px
@@ -47,6 +42,6 @@
       border-color: #009b00
     &:active
       transition: 0.1s ease
-      border-color: #003600
+      border-color: var(--color-dark-green)
   b
     padding-top: 10px
