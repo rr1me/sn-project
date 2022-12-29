@@ -1,6 +1,6 @@
 import {useLayoutEffect, useRef} from "react";
 
-const AutoresizableTextarea = ({className, value, onChange}) => {
+const AutoresizableTextarea = ({className, value, onChange, placeholder}) => {
 
     const textareaRef = useRef();
 
@@ -10,7 +10,7 @@ const AutoresizableTextarea = ({className, value, onChange}) => {
     }, [value]);
 
     return (
-        <textarea ref={textareaRef} className={className} value={value} onChange={onChange}/>
+        <textarea placeholder={placeholder} ref={textareaRef} className={className} value={value} onChange={onChange}/>
     )
 };
 

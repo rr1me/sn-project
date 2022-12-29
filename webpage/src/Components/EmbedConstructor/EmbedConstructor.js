@@ -1,5 +1,5 @@
 import './EmbedConstructor.sass';
-import {useMemo} from "react";
+import {memo, useMemo} from "react";
 import AutoresizableTextarea from "../AutoresizableTextarea/AutoresizableTextarea";
 import {useDispatch, useSelector} from "react-redux";
 import {embedActions} from "../redux/embedSlice";
@@ -12,7 +12,46 @@ const EmbedConstructor = () => {
     const dispatch = useDispatch();
     const {title, description, url, color, fields} = useSelector(state => state.embedSlice);
 
-    const handleFieldBlock = (index, type) => e => {
+    // const handleFieldBlock = (index, type) => e => {
+    //     dispatch(setFieldBlock({
+    //         index: index,
+    //         type: type,
+    //         value: e.target.value
+    //     }));
+    // };
+
+    // const getFields = useCallback(() => fields.map((v,i) => <Field key={i} v={v} i={i} fields={fields} handleFieldBlock={handleFieldBlock} dispatch={dispatch}/>), [fields]);
+
+    const addHandle = () => dispatch(addField());
+
+    return (
+        <div className='embedConstructor'>
+            <div className='field'>
+                Title
+                {useMemoArea(title, handleAnyField('title'), 'textarea')}
+                Description
+                {useMemoArea(description, handleAnyField('description'), 'textarea')}
+                URL
+                {useMemoArea(url, handleAnyField('url'), 'textarea')}
+                Color
+                <input className='colorPicker' type='color' value={color} onChange={handleAnyField('color')}/>
+                Fields
+                <div className='fields'>
+                    <div className='tab'/>
+                    <div className='actualFields'>
+                        {fields.map((v,i) => <Field key={i} id={v.id} index={i} title={v.title} text={v.text} dispatch={dispatch}/>)}
+                        <button className='btn addBtn' onClick={addHandle}>Add field</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    )
+};
+
+const Field = memo(({id, index, title, text, dispatch}) => {
+    const handleRemove = () => dispatch(removeField(id));
+
+    const handleFieldBlock = type => e => {
         dispatch(setFieldBlock({
             index: index,
             type: type,
@@ -21,57 +60,35 @@ const EmbedConstructor = () => {
     };
 
     return (
-        <div className='embedConstructor'>
-            <div className='field'>
-                Title
-                {/*{useMemoArea(<AutoresizableTextarea value={title} onChange={handleAnyField('title')} className='textarea' type='text'/>, title)}*/}
-                {useMemoArea(title, handleAnyField('title'), 'textarea')}
-                Description
-                {/*{useMemoArea(<AutoresizableTextarea value={description} onChange={handleAnyField('description')} className='textarea' type='text'/>, description)}*/}
-                {useMemoArea(description, handleAnyField('description'), 'textarea')}
-                URL
-                {/*{useMemoArea(<AutoresizableTextarea value={url} onChange={handleAnyField('url')} className='textarea' type='text'/>, url)}*/}
-                {useMemoArea(url, handleAnyField('url'), 'textarea')}
-                Color
-                <input className='colorPicker' type='color' value={color} onChange={handleAnyField('color')}/>
-                Fields
-                <div className='fields'>
-                    <div className='tab'/>
-                    <div className='actualFields'>
-                        {fields.map((v,i) => {
-                            return (
-                                // <div className='fieldBlock' key={i}>
-                                //     {useMemoArea('Field title', fields[i].title, handleFieldBlock(i, 'text'))}
-                                //     {useMemoArea(<AutoresizableTextarea placeholder='Field text' value={fields[i].text} onChange={handleFieldBlock(i, 'text')}/>)}
-                                //     <button>inline</button>
-                                //     <button className='btn removeBtn' onClick={() => {
-                                //         dispatch(removeField(v.id));
-                                //     }}>x</button>
-                                // </div>
-                                <Field key={i} v={v} i={i} fields={fields} handleFieldBlock={handleFieldBlock} dispatch={dispatch}/>
-                            )
-                        })}
-                        <button className='btn addBtn' onClick={() => {
-                            dispatch(addField());
-                        }}>Add field</button>
-                    </div>
-                </div>
-            </div>
+        <div className='fieldBlock'>
+            {useMemoArea(title, handleFieldBlock('title'), null, 'Field title')}
+            {useMemoArea(text, handleFieldBlock('text'), null, 'Field text')}
+            <button>inline</button>
+            <button className='btn removeBtn' onClick={handleRemove}>x</button>
         </div>
     )
-};
+});
+
+// const Fields = () => {
+//     const {fields} = useSelector(state => state.embedSlice);
+//
+//     const dispatch = useDispatch();
+//
+//     const addHandle = () => dispatch(addField());
+//
+//     // const useField = () => useCallback(() =>{})
+//
+//     return (
+//         <div className='fields'>
+//             <div className='tab'/>
+//             <div className='actualFields'>
+//                 {fields.map((v,i) => <Field key={i} v={v} i={i} title={v.title} text={v.text} dispatch={dispatch}/>)}
+//                 <button className='btn addBtn' onClick={addHandle}>Add field</button>
+//             </div>
+//         </div>
+//     )
+// }
 
 const useMemoArea = (value, onChange, className, placeholder) => useMemo(() => <AutoresizableTextarea className={className} placeholder={placeholder} value={value} onChange={onChange}/>, [value]);
-
-const Field = ({v, i, fields, handleFieldBlock, dispatch}) =>
-    <div className='fieldBlock' key={i}>
-        {useMemoArea(fields[i].title, handleFieldBlock(i, 'title'), null, 'Field title')}
-        {useMemoArea(fields[i].text, handleFieldBlock(i, 'text'), null, 'Field text')}
-        {/*{useMemoArea(<AutoresizableTextarea placeholder='Field text' value={fields[i].text} onChange={handleFieldBlock(i, 'text')}/>)}*/}
-        <button>inline</button>
-        <button className='btn removeBtn' onClick={() => {
-            dispatch(removeField(v.id));
-        }}>x</button>
-    </div>
 
 export default EmbedConstructor;
