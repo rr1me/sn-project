@@ -1,7 +1,29 @@
 $gray: #939393
+$taBorder: 2px solid green
 
 .embedConstructor
   padding: 15px
+
+  @mixin inputFields
+    z-index: 1
+    resize: none
+    background-color: var(--bg-color-extradark-green)
+    border-radius: var(--border-radius)
+    color: white
+    outline: none
+    &:focus
+      border-color: $gray
+
+  @mixin block
+    display: flex
+    gap: 15px
+    .tab
+      z-index: -1
+      background-color: var(--bg-color-extradark-green)
+      border-radius: var(--border-radius)
+      border: 1px solid green
+      width: 15px
+      transform: scaleY(105%)
 
   > *
     display: flex
@@ -9,6 +31,29 @@ $gray: #939393
     gap: 15px
 
     width: 40%
+
+    .image
+
+      @include block
+      //width: 0
+
+
+      .imageFields
+        //padding: 5px
+        display: flex
+        flex-direction: column
+        width: 100%
+        gap: 5px
+
+      input
+        border: 2px solid var(--color-mid-green)
+
+
+    input
+      @include inputFields
+      border: $taBorder
+      padding: 5px
+
 
     .colorPicker
       z-index: 1
@@ -19,33 +64,32 @@ $gray: #939393
       background-color: var(--bg-color-extradark-green)
 
     .textarea
-      //font: 17px Dited
       font-size: 14px
       height: 12px
 
-      z-index: 1
-      resize: none
+      //z-index: 1
+      //resize: none
       padding: 8px
 
-      border: 2px solid green
-      background-color: var(--bg-color-extradark-green)
-      border-radius: var(--border-radius)
+      border: $taBorder
+      //background-color: var(--bg-color-extradark-green)
+      //border-radius: var(--border-radius)
 
-      color: white
-      &:focus
-        outline: none
-        border-color: $gray
+
+      //color: white
+      @include inputFields
 
 
     .fields
-      display: flex
-      gap: 15px
+      //display: flex
+      //gap: 15px
+      @include block
       .actualFields
         display: flex
         flex-direction: column
         gap: 15px
 
-        padding: 5px
+        //padding: 5px
         width: 100%
         .addBtn
           padding: 10px
@@ -58,29 +102,31 @@ $gray: #939393
           gap: 5px
 
           overflow: visible
+
+          .inline
+            display: flex
+            font: 500 16px ScientificCalculator
+            letter-spacing: -3px
+            .checkbox
+              height: 15px
+              width: 15px
+              accent-color: var(--color-dark-green)
+
           .removeBtn
             grid-column-start: 2
             grid-column-end: 3
             grid-row-start: 1
             grid-row-end: 4
           > textarea
-            resize: none
-            color: white
-            z-index: 1
-            background-color: var(--bg-color-extradark-green)
+            //resize: none
+            //color: white
+            //z-index: 1
+            //background-color: var(--bg-color-extradark-green)
 
-            border-radius: var(--border-radius)
-            border: 2px solid #186320
-            outline: none
+            //border-radius: var(--border-radius)
+            @include inputFields
+
+            //border: 2px solid #186320
+            border: 2px solid var(--color-mid-green)
 
             padding: 7px
-            &:focus
-              border-color: $gray
-
-
-
-      .tab
-        background-color: var(--bg-color-extradark-green)
-        border-radius: var(--border-radius)
-        border: 1px solid green
-        width: 15px

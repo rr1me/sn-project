@@ -9,6 +9,22 @@ const fieldTemplate = () => {
     }
 }
 
+const fourInputsFieldTemplate = isAuthor => {
+    return isAuthor ?
+        {
+            name: '',
+            url: '',
+            icon_url: '',
+            proxy_icon_url: ''
+        } :
+        {
+            url: '',
+            proxy_url: '',
+            height: '',
+            width: ''
+        }
+}
+
 const embedSlice = createSlice({
     name: 'embedSlice',
     initialState:{
@@ -16,7 +32,11 @@ const embedSlice = createSlice({
         description: '',
         url: '',
         color: '#ff0000',
-        fields: [fieldTemplate()]
+        fields: [fieldTemplate()],
+        timestamp: '',
+        image: fourInputsFieldTemplate(false),
+        thumbnail: fourInputsFieldTemplate(false),
+        author: fourInputsFieldTemplate(true)
     },
     reducers: {
         setAnyField(state, {payload}){
@@ -24,14 +44,23 @@ const embedSlice = createSlice({
             state[type] = value;
         },
         addField(state){
-            state.fields.push(fieldTemplate())
+            state.fields.push(fieldTemplate());
         },
         removeField(state, {payload: id}){
             state.fields = state.fields.filter(v => v.id !== id);
         },
         setFieldBlock(state, {payload}){
-            const {index, type, value} = payload
-            state.fields[index][type] = value
+            const {index, type, value} = payload;
+            state.fields[index][type] = value;
+        },
+        setImageBlock(state, {payload}){
+            const {type, value} = payload;
+            state.image[type] = value;
+        },
+        fourInputsReducer(state, {payload}){
+            const {state:stateName, type, value} = payload;
+            console.log(stateName, type, value);
+            state[stateName][type] = value
         }
     }
 });
