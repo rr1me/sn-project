@@ -14,9 +14,18 @@ $taBorder: 2px solid green
     &:focus
       border-color: $gray
 
-  @mixin block
+  .block
     display: flex
     gap: 15px
+    > *
+      &:last-child
+        display: flex
+        flex-direction: column
+        gap: 5px
+        width: 100%
+        input
+          border: 2px solid var(--color-mid-green)
+
     .tab
       z-index: -1
       background-color: var(--bg-color-extradark-green)
@@ -32,21 +41,13 @@ $taBorder: 2px solid green
 
     width: 40%
 
+    .footer
+      .footerFields
+        textarea
+          border: 2px solid var(--color-mid-green)
+
     .image
-
-      @include block
-      //width: 0
-
-
       .imageFields
-        //padding: 5px
-        display: flex
-        flex-direction: column
-        width: 100%
-        gap: 5px
-
-      input
-        border: 2px solid var(--color-mid-green)
 
 
     input
@@ -66,31 +67,15 @@ $taBorder: 2px solid green
     .textarea
       font-size: 14px
       height: 12px
-
-      //z-index: 1
-      //resize: none
       padding: 8px
 
       border: $taBorder
-      //background-color: var(--bg-color-extradark-green)
-      //border-radius: var(--border-radius)
-
-
-      //color: white
       @include inputFields
 
 
     .fields
-      //display: flex
-      //gap: 15px
-      @include block
       .actualFields
-        display: flex
-        flex-direction: column
         gap: 15px
-
-        //padding: 5px
-        width: 100%
         .addBtn
           padding: 10px
           width: 100%
@@ -118,15 +103,7 @@ $taBorder: 2px solid green
             grid-row-start: 1
             grid-row-end: 4
           > textarea
-            //resize: none
-            //color: white
-            //z-index: 1
-            //background-color: var(--bg-color-extradark-green)
-
-            //border-radius: var(--border-radius)
             @include inputFields
 
-            //border: 2px solid #186320
             border: 2px solid var(--color-mid-green)
-
             padding: 7px

@@ -36,7 +36,12 @@ const embedSlice = createSlice({
         timestamp: '',
         image: fourInputsFieldTemplate(false),
         thumbnail: fourInputsFieldTemplate(false),
-        author: fourInputsFieldTemplate(true)
+        author: fourInputsFieldTemplate(true),
+        footer:{
+            text: '',
+            icon_url: '',
+            proxy_icon_url: ''
+        }
     },
     reducers: {
         setAnyField(state, {payload}){
@@ -53,14 +58,14 @@ const embedSlice = createSlice({
             const {index, type, value} = payload;
             state.fields[index][type] = value;
         },
-        setImageBlock(state, {payload}){
-            const {type, value} = payload;
-            state.image[type] = value;
-        },
         fourInputsReducer(state, {payload}){
             const {state:stateName, type, value} = payload;
             console.log(stateName, type, value);
             state[stateName][type] = value
+        },
+        setFooter(state, {payload}){
+            const {type, value} = payload;
+            state.footer[type] = value;
         }
     }
 });

@@ -4,22 +4,18 @@ import AutoresizableTextarea from "../AutoresizableTextarea/AutoresizableTextare
 import {useDispatch, useSelector} from "react-redux";
 import {embedActions} from "../redux/embedSlice";
 
-const {addField, removeField, setAnyField, setFieldBlock, setImageBlock, fourInputsReducer} = embedActions;
+const {addField, removeField, setAnyField, setFieldBlock, fourInputsReducer, setFooter} = embedActions;
 
 const EmbedConstructor = () => {
-    const handleAnyField = type => e => dispatch(setAnyField({type:type, value:e.target.value}));
-
     const dispatch = useDispatch();
-    const {title, description, url, color, fields, timestamp, image, thumbnail, author} = useSelector(state => state.embedSlice);
+
+    const {title, description, url, color, fields, timestamp, image, thumbnail, author, footer} = useSelector(state => state.embedSlice);
+
+    const handleAnyField = type => e => dispatch(setAnyField({type:type, value:e.target.value}));
 
     const addHandle = () => dispatch(addField());
 
-    // const handleImageBlock = type => e => {
-    //     dispatch(setImageBlock({
-    //         type: type,
-    //         value: e.target.value
-    //     }))
-    // }
+    const footerHandler = type => e => dispatch(setFooter({type:type, value:e.target.value}))
 
     return (
         <div className='embedConstructor'>
@@ -33,7 +29,7 @@ const EmbedConstructor = () => {
                 Color
                 <input className='colorPicker' type='color' value={color} onChange={handleAnyField('color')}/>
                 Fields
-                <div className='fields'>
+                <div className='fields block'>
                     <div className='tab'/>
                     <div className='actualFields'>
                         {fields.map((v,i) => <Field key={i} id={v.id} index={i} title={v.title} text={v.text} inline={v.inline} dispatch={dispatch}/>)}
@@ -43,25 +39,28 @@ const EmbedConstructor = () => {
                 Timestamp
                 <input type='text' value={timestamp} onChange={handleAnyField('timestamp')}/>
                 Image
-                <div className='image'>
+                <div className='image block'>
                     <div className='tab'/>
-                    {/*<div className='imageFields'>*/}
-                    {/*    <input type='text' placeholder='URL' value={image.url} onChange={handleImageBlock('url')}/>*/}
-                    {/*    <input type='text' placeholder='Proxy URL' value={image.proxy} onChange={handleImageBlock('proxy')}/>*/}
-                    {/*    <input type='text' placeholder='Height' value={image.height} onChange={handleImageBlock('height')}/>*/}
-                    {/*    <input type='text' placeholder='Width' value={image.width} onChange={handleImageBlock('width')}/>*/}
-                    {/*</div>*/}
                     <FourInputsElement object={image} state={'image'} dispatch={dispatch}/>
                 </div>
                 Thumbnail
-                <div className='thumbnail'>
+                <div className='thumbnail block'>
                     <div className='tab'/>
                     <FourInputsElement object={thumbnail} state={'thumbnail'} dispatch={dispatch}/>
                 </div>
                 Author
-                <div className='author'>
+                <div className='author block'>
                     <div className='tab'/>
                     <FourInputsElement object={author} state={'author'} dispatch={dispatch} isAuthor={true}/>
+                </div>
+                Footer
+                <div className='footer block'>
+                    <div className='tab'/>
+                    <div className='footerFields'>
+                        {useMemoArea(footer.text, footerHandler('text'), 'textarea', 'text')}
+                        <input type='text' placeholder='Icon URL' value={footer.icon_url} onChange={footerHandler('icon_url')}/>
+                        <input type='text' placeholder='Proxy icon URL' value={footer.proxy_icon_url} onChange={footerHandler('proxy_icon_url')}/>
+                    </div>
                 </div>
             </div>
         </div>
