@@ -1,12 +1,34 @@
 import './EmbedConstructor.sass';
-import {memo, useMemo, useState} from "react";
+import {memo, useEffect, useMemo, useRef, useState} from "react";
 import AutoresizableTextarea from "../AutoresizableTextarea/AutoresizableTextarea";
 import {useDispatch, useSelector} from "react-redux";
 import {embedActions} from "../redux/embedSlice";
 
+import avatar from './avatar.png';
+
 const {addField, removeField, setAnyField, setFieldBlock, fourInputsReducer, setFooter} = embedActions;
 
 const EmbedConstructor = () => {
+    const previewRef = useRef();
+    const messageRef = useRef();
+
+    useEffect(() => {
+        const eventConsole = () => {
+            const topPreview = previewRef.current?.parentElement.getBoundingClientRect().top
+            if (topPreview < 35)
+            {
+                const data = -topPreview + 35;
+                previewRef.current?.setAttribute('style', 'transform: translate3D(0, ' + data + 'px,0)')
+            }else{
+                previewRef.current?.setAttribute('style', 'transform: translate3D(0,0,0)')
+            }
+        };
+
+        document.addEventListener('scroll', eventConsole);
+
+        return () => document.removeEventListener('scroll', eventConsole);
+    }, []);
+
     const dispatch = useDispatch();
 
     const {title, description, url, color, fields, timestamp, image, thumbnail, author, footer} = useSelector(state => state.embedSlice);
@@ -60,6 +82,21 @@ const EmbedConstructor = () => {
                         {useMemoArea(footer.text, footerHandler('text'), 'textarea', 'text')}
                         <input type='text' placeholder='Icon URL' value={footer.icon_url} onChange={footerHandler('icon_url')}/>
                         <input type='text' placeholder='Proxy icon URL' value={footer.proxy_icon_url} onChange={footerHandler('proxy_icon_url')}/>
+                    </div>
+                </div>
+            </div>
+            <div className='preview' ref={previewRef}>
+                <div className='message' ref={messageRef}>
+                    <div className='avatar'>
+                        <img src={avatar}/>
+                    </div>
+                    <div className='bot'>
+                        <div className='name'>
+                            <b>100RAD</b>
+                            <div className='tag'>BOT</div>
+                            <div className='date'>Never</div>
+                        </div>
+
                     </div>
                 </div>
             </div>
