@@ -23,23 +23,63 @@ $taBorder: 2px solid green
 
     padding: 16px
 
-    top: 0
-    position: sticky
-    position: -webkit-sticky
+    width: 80%
 
     .message
+      font: 16px "Roboto"
+      font-variant-ligatures: no-common-ligatures
       display: flex
       gap: 16px
 
       .bot
+        flex-grow: 1
+        .embed
+          color: white
+          background-color: #36393f
+          padding: 16px
+          border-radius: 4px
+          box-shadow: 0 4px 8px rgba(0,0,0, 30%)
+          margin-top: 8px
+          border-left: 4px solid
+
+          display: flex
+          //flex: 1
+
+
+          .embedThumbnail
+            img
+              max-height: 64px
+              max-width: 64px
+
+          .embedContent
+            flex: 1
+
+            .embedImage
+              img
+                max-height: 400px
+                max-width: 400px
+
+            .embedField
+              margin-top: 16px
+              .text
+                margin-top: 4px
+
+            .title
+              font-weight: 500
+              a
+                text-decoration: none
+                color: #1eb1f1
+            .desc
+              margin-top: 16px
+              color: #ddd
+              font-size: 14px
+
         .name
           color: white
           display: flex
           align-items: center
 
           gap: 8px
-          font: 16px "Roboto"
-          font-variant-ligatures: no-common-ligatures
 
           .tag
             background-color: #5865f2
@@ -63,15 +103,14 @@ $taBorder: 2px solid green
           object-position: center
 
   @mixin inputFields
-    position: relative
-    z-index: 4
+    z-index: 1
     resize: none
     background-color: var(--bg-color-extradark-green)
     border-radius: var(--border-radius)
     color: white
     outline: none
     &:focus
-      border-color: $gray
+      border-color: $gray !important
 
   .block
     display: flex
@@ -82,8 +121,9 @@ $taBorder: 2px solid green
         flex-direction: column
         gap: 5px
         width: 100%
-        input
+        > input
           border: 2px solid var(--color-mid-green)
+          //@include inputFields
 
     .tab
       z-index: 4
@@ -109,9 +149,12 @@ $taBorder: 2px solid green
       .imageFields
 
 
-    input
-      @include inputFields
+    > input
       border: $taBorder
+    input
+      //background-color: black !important
+      @include inputFields
+      //border: $taBorder
       padding: 5px
 
 

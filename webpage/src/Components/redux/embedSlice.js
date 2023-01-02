@@ -31,7 +31,7 @@ const embedSlice = createSlice({
         title: '',
         description: '',
         url: '',
-        color: '#ff0000',
+        color: '#00ff00',
         fields: [fieldTemplate()],
         timestamp: '',
         image: fourInputsFieldTemplate(false),
@@ -55,6 +55,7 @@ const embedSlice = createSlice({
             state.fields = state.fields.filter(v => v.id !== id);
         },
         setFieldBlock(state, {payload}){
+            console.log(payload);
             const {index, type, value} = payload;
             state.fields[index][type] = value;
         },

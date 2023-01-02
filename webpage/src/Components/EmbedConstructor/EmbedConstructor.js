@@ -1,10 +1,11 @@
 import './EmbedConstructor.sass';
-import {memo, useEffect, useMemo, useRef, useState} from "react";
+import {memo, useEffect, useMemo, useRef} from "react";
 import AutoresizableTextarea from "../AutoresizableTextarea/AutoresizableTextarea";
 import {useDispatch, useSelector} from "react-redux";
 import {embedActions} from "../redux/embedSlice";
 
 import avatar from './avatar.png';
+import {Link} from "react-router-dom";
 
 const {addField, removeField, setAnyField, setFieldBlock, fourInputsReducer, setFooter} = embedActions;
 
@@ -39,6 +40,18 @@ const EmbedConstructor = () => {
 
     const footerHandler = type => e => dispatch(setFooter({type:type, value:e.target.value}))
 
+    const getFields = () => {
+        return fields.map((v, i) => {
+            console.log(v);
+            return (
+                <div className='embedField' key={i} style={v.inline ? {display: 'inline-block', paddingRight: 16} : null}>
+                    <div className='title'>{v.title}</div>
+                    <div className='text'>{v.text}</div>
+                </div>
+            )
+        })
+    }
+
     return (
         <div className='embedConstructor'>
             <div className='field'>
@@ -47,7 +60,8 @@ const EmbedConstructor = () => {
                 Description
                 {useMemoArea(description, handleAnyField('description'), 'textarea')}
                 URL
-                {useMemoArea(url, handleAnyField('url'), 'textarea')}
+                {/*{useMemoArea(url, handleAnyField('url'), 'textarea')}*/}
+                <input className='url' value={url} onChange={handleAnyField('url')}/>
                 Color
                 <input className='colorPicker' type='color' value={color} onChange={handleAnyField('color')}/>
                 Fields
@@ -96,7 +110,19 @@ const EmbedConstructor = () => {
                             <div className='tag'>BOT</div>
                             <div className='date'>Never</div>
                         </div>
-
+                        <div className='embed' style={{borderColor: color}}>
+                            <div className='embedContent'>
+                                <div className='title'>{url ? <a href={url}>{title}</a> : title}</div>
+                                <div className='desc'>{description}</div>
+                                {getFields()}
+                                <div className='embedImage'>
+                                    <img src={image.url} alt={image.proxy_url} width={image.width} height={image.height}/>
+                                </div>
+                            </div>
+                            <div className='embedThumbnail'>
+                                <img src={thumbnail.url} alt={thumbnail.proxy_url} width={thumbnail.width} height={thumbnail.height}/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -126,11 +152,11 @@ const FourInputsElement = memo(({object, state, dispatch, isAuthor}) => {
 const Field = memo(({id, index, title, text, inline, dispatch}) => {
     const handleRemove = () => dispatch(removeField(id));
 
-    const handleFieldBlock = type => e => {
+    const handleFieldBlock = (type, isCheckbox) => e => {
         dispatch(setFieldBlock({
             index: index,
             type: type,
-            value: e.target.checked
+            value: isCheckbox ? e.target.checked : e.target.value
         }));
     };
 
@@ -139,7 +165,7 @@ const Field = memo(({id, index, title, text, inline, dispatch}) => {
             {useMemoArea(title, handleFieldBlock('title'), null, 'Field title')}
             {useMemoArea(text, handleFieldBlock('text'), null, 'Field text')}
             <div className='inline'>
-                <input type='checkbox' className='checkbox' checked={inline} onChange={handleFieldBlock('inline')}/>
+                <input type='checkbox' className='checkbox' checked={inline} onChange={handleFieldBlock('inline', true)}/>
                 <label className='label'>Inline</label>
             </div>
             <button className='btn removeBtn' onClick={handleRemove}>x</button>
