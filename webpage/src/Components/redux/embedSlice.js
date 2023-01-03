@@ -1,4 +1,17 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
+import axios from "axios";
+
+export const sendEmbedThunk = createAsyncThunk(
+    'sendEmbed',
+    async (_, {getState, rejectWithValue}) => {
+        const state = getState()?.embedSlice
+        console.log(state);
+
+        const r = await axios.post('/api/bot/embed', state);
+        console.log(r);
+
+    }
+)
 
 const fieldTemplate = () => {
     return {

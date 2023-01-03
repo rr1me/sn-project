@@ -9,8 +9,15 @@ public class GatewayController : ControllerBase
 {
     [Route("/bot/{resource}")]
     [Authorize]
-    public IActionResult bot()
+    public async Task<IActionResult> bot()
     {
+
+        using (StreamReader stream = new StreamReader(HttpContext.Request.Body))
+        {
+            string body = await stream.ReadToEndAsync();
+            // body = "param=somevalue&param2=someothervalue"
+            Console.WriteLine(body);
+        }
 
         return Ok(Request.GetDisplayUrl() + " | " + Request.Path);
     }

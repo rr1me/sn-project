@@ -2,16 +2,14 @@ import './EmbedConstructor.sass';
 import {memo, useEffect, useMemo, useRef} from "react";
 import AutoresizableTextarea from "../AutoresizableTextarea/AutoresizableTextarea";
 import {useDispatch, useSelector} from "react-redux";
-import {embedActions} from "../redux/embedSlice";
+import {embedActions, sendEmbedThunk} from "../redux/embedSlice";
 
 import avatar from './avatar.png';
-import {Link} from "react-router-dom";
 
 const {addField, removeField, setAnyField, setFieldBlock, fourInputsReducer, setFooter} = embedActions;
 
 const EmbedConstructor = () => {
     const previewRef = useRef();
-    const messageRef = useRef();
 
     useEffect(() => {
         const eventConsole = () => {
@@ -52,8 +50,13 @@ const EmbedConstructor = () => {
         })
     }
 
+    const sendBtnHandle = () => {
+        dispatch(sendEmbedThunk());
+    }
+
     return (
         <div className='embedConstructor'>
+
             <div className='field'>
                 Title
                 {useMemoArea(title, handleAnyField('title'), 'textarea')}
@@ -99,33 +102,51 @@ const EmbedConstructor = () => {
                     </div>
                 </div>
             </div>
+
+
             <div className='preview' ref={previewRef}>
-                <div className='message' ref={messageRef}>
-                    <div className='avatar'>
-                        <img src={avatar}/>
-                    </div>
-                    <div className='bot'>
-                        <div className='name'>
-                            <b>100RAD</b>
-                            <div className='tag'>BOT</div>
-                            <div className='date'>Never</div>
+                <div className='messageWrapper'>
+                    <div className='message'>
+                        <div className='avatar'>
+                            <img src={avatar}/>
                         </div>
-                        <div className='embed' style={{borderColor: color}}>
-                            <div className='embedContent'>
-                                <div className='title'>{url ? <a href={url}>{title}</a> : title}</div>
-                                <div className='desc'>{description}</div>
-                                {getFields()}
-                                <div className='embedImage'>
-                                    <img src={image.url} alt={image.proxy_url} width={image.width} height={image.height}/>
-                                </div>
+                        <div className='bot'>
+                            <div className='name'>
+                                <b>100RAD</b>
+                                <div className='tag'>BOT</div>
+                                <div className='date'>Never</div>
                             </div>
-                            <div className='embedThumbnail'>
-                                <img src={thumbnail.url} alt={thumbnail.proxy_url} width={thumbnail.width} height={thumbnail.height}/>
+                            <div className='embed' style={{borderColor: color}}>
+                                <div className='embedContent'>
+                                    <div className='embedAuthor'>
+                                        {author.icon_url ? <img src={author.icon_url} alt={author.proxy_icon_url} width={32} height={32}/> : null}
+                                        <div className='authorName'>{author.url ? <a href={author.url}>{author.name}</a> : author.name}</div>
+                                    </div>
+                                    <div className='title'>{url ? <a href={url}>{title}</a> : title}</div>
+                                    <div className='desc'>{description}</div>
+                                    {getFields()}
+                                    <div className='embedImage'>
+                                        <img src={image.url} alt={image.proxy_url} width={image.width} height={image.height}/>
+                                    </div>
+                                    <div className='embedFooter'>
+                                        {footer.icon_url ? <img src={footer.icon_url} alt={footer.proxy_icon_url} width={16} height={16}/> : null}
+                                        {footer.text}
+                                    </div>
+                                </div>
+                                <div className='embedThumbnail'>
+                                    <img src={thumbnail.url} alt={thumbnail.proxy_url} width={thumbnail.width} height={thumbnail.height}/>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <div className='constructorHandle'>
+                    <button className='btn sendBtn' onClick={sendBtnHandle}>Send news</button>
+                </div>
+
             </div>
+
         </div>
     )
 };
