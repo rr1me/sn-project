@@ -1,4 +1,8 @@
 using discordBot;
+
 var builder = WebApplication.CreateBuilder();
 
-await new BotRunner().Run(builder);
+builder.Services.AddControllers();
+builder.Services.AddHttpClient();
+
+await new BotRunner(builder).Run();

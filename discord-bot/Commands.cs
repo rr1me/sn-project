@@ -1,7 +1,7 @@
 ﻿using Discord;
 using Discord.Commands;
 
-namespace discordBot;
+namespace discordBot.Commands;
 
 public class Commands : ModuleBase<SocketCommandContext>
 {
@@ -16,7 +16,7 @@ public class Commands : ModuleBase<SocketCommandContext>
     [RequireUserPermission(GuildPermission.Administrator)]
     public async Task UpdateSettings()
     {
-        // await _miscellaneous.UpdateSettings();
+        await _miscellaneous.UpdateSettings();
         ReplyAsync("Настройки обновлены.");
     }
 }

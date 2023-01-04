@@ -4,16 +4,12 @@
         <TargetFramework>net7.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <RootNamespace>discord_bot</RootNamespace>
+        <RootNamespace>myGreeterBot</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
       <PackageReference Include="Discord.Net.Commands" Version="3.8.1" />
-      <PackageReference Include="Discord.Net.Interactions" Version="3.8.1" />
       <PackageReference Include="Discord.Net.WebSocket" Version="3.8.1" />
-      <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="7.0.1" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="7.0.0" />
     </ItemGroup>
 
 </Project>

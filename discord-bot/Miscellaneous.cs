@@ -88,9 +88,14 @@ public class Miscellaneous
         foreach (var emoteUnicode in formalReactions)
         {
             var reactionKeys = reactions.Keys.Select(x=>x.ToString());
-            
+
             if (reactions.Count == 0 || !reactionKeys.Contains(emoteUnicode))
-                await message.AddReactionAsync(Emote.Parse(emoteUnicode));
+            {
+                if (Emote.TryParse(emoteUnicode, out var emote))
+                    await message.AddReactionAsync(emote);
+                else
+                    await message.AddReactionAsync(new Emoji(emoteUnicode));
+            }
         }
     }
 }
