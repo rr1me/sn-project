@@ -7,7 +7,7 @@ export const sendEmbedThunk = createAsyncThunk(
         const state = getState()?.embedSlice
         console.log(state);
 
-        const r = await axios.post('/api/bot/embed', state);
+        const r = await axios.post('/api/bot/embed', state).catch(reason => console.log(reason));
         console.log(r);
 
     }

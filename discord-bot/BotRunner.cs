@@ -8,11 +8,6 @@ namespace discordBot;
 
 public class BotRunner
 {
-
-    // private readonly IServiceProvider _serviceProvider;
-
-    // private readonly IServiceCollection _serviceCollection;
-
     private readonly WebApplicationBuilder _builder;
     
     public BotRunner(WebApplicationBuilder builder)
@@ -20,12 +15,12 @@ public class BotRunner
         var config = new DiscordSocketConfig()
         {
             GatewayIntents =
-                // GatewayIntents.GuildMessageReactions |
-                // GatewayIntents.GuildMembers |
-                // GatewayIntents.GuildPresences |
-                // GatewayIntents.Guilds |
-                // GatewayIntents.GuildMessages | GatewayIntents.MessageContent
-                GatewayIntents.All
+                GatewayIntents.GuildMessageReactions |
+                GatewayIntents.GuildMembers |
+                GatewayIntents.GuildPresences |
+                GatewayIntents.Guilds |
+                GatewayIntents.GuildMessages | GatewayIntents.MessageContent
+                // GatewayIntents.All
         };
         
         builder.Services
@@ -37,36 +32,7 @@ public class BotRunner
             .AddSingleton<Miscellaneous>();
 
         _builder = builder;
-
-        // _serviceProvider = CreateProvider();
-
-        // var app = builder.Build();
-        //
-        // _serviceProvider = app.Services;
     }
-
-    // private IServiceProvider CreateProvider()
-    // {
-    //     var config = new DiscordSocketConfig()
-    //     {
-    //         GatewayIntents =
-    //             GatewayIntents.GuildMessageReactions |
-    //             GatewayIntents.GuildMembers |
-    //             GatewayIntents.GuildPresences |
-    //             GatewayIntents.Guilds |
-    //             GatewayIntents.GuildMessages | GatewayIntents.MessageContent
-    //     };
-    //
-    //     var collection = new ServiceCollection()
-    //         .AddSingleton(config)
-    //         .AddSingleton<DiscordSocketClient>()
-    //         .AddSingleton<CommandService>()
-    //         .AddSingleton<Settings>()
-    //         .AddSingleton<Events>()
-    //         .AddSingleton<Miscellaneous>();
-    //     
-    //     return collection.BuildServiceProvider();
-    // }
 
     private DiscordSocketClient _client;
     private CommandService _commands;
@@ -100,6 +66,5 @@ public class BotRunner
         await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(), services: serviceProvider);
 
         await app.RunAsync();
-        // await Task.Delay(-1);
     }
 }
