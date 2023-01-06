@@ -13,8 +13,14 @@ $taBorder: 2px solid green
     width: 80%
 
     .constructorHandle
-      display: flex
-      justify-content: flex-end
+      display: inline-flex
+      flex-direction: column
+      align-items: flex-end
+      gap: 15px
+      b
+        font: 18px ScientificCalculator
+        letter-spacing: -6px
+        word-spacing: 13px
       .sendBtn
         padding: 10px 14px
 
@@ -50,8 +56,6 @@ $taBorder: 2px solid green
             border-left: 4px solid
 
             display: flex
-            //flex: 1
-
 
             .embedThumbnail
               img
@@ -154,7 +158,6 @@ $taBorder: 2px solid green
         width: 100%
         > input
           border: 2px solid var(--color-mid-green)
-          //@include inputFields
 
     .tab
       z-index: 4
@@ -169,23 +172,15 @@ $taBorder: 2px solid green
     flex-direction: column
     gap: 15px
 
-    //width: 40%
-
     .footer
       .footerFields
         textarea
           border: 2px solid var(--color-mid-green)
 
-    .image
-      .imageFields
-
-
     > input
       border: $taBorder
     input
-      //background-color: black !important
       @include inputFields
-      //border: $taBorder
       padding: 5px
 
 

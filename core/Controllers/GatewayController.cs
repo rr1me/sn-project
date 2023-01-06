@@ -1,14 +1,13 @@
 ﻿using System.Text;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace core.Controllers;
 
 [ApiController]
+[Authorize]
 public class GatewayController : ControllerBase
 {
-
     private readonly IHttpClientFactory _clientFactory;
 
     public GatewayController(IHttpClientFactory clientFactory)
@@ -16,41 +15,29 @@ public class GatewayController : ControllerBase
         _clientFactory = clientFactory;
     }
 
-    [Route("/bot/{resource}")]
-    [Authorize]
-    public async Task<IActionResult> bot(string resource)
-    {
+    [Route("/bot/{*resource}")]
+    public async Task<IActionResult> BotGateway(string resource) => await RoutingHandler("http://localhost:5000/" + resource);
 
-        // HttpContext.Request.EnableBuffering();
-        //
+    // [HttpGet]
+    [Route("/non-auth/{*q}")]   
+    [AllowAnonymous]
+    public IActionResult TestGateway(string q)
+    {
+        Console.WriteLine(q);
+        return Ok("!");
+    }
+
+    private async  Task<IActionResult> RoutingHandler(string url)
+    {
         var stream = new StreamReader(HttpContext.Request.Body);
         var body = await stream.ReadToEndAsync();
-        Console.WriteLine(resource);
-        //
-        var request = new HttpRequestMessage(HttpMethod.Post, "http://localhost:5000/"+resource);
+
+        var request = new HttpRequestMessage(HttpMethod.Post, url);
         request.Content = new StringContent(body, Encoding.UTF8, "application/json");
         
         var httpClient = _clientFactory.CreateClient();
         
         var r = await httpClient.SendAsync(request);
-        
-        
-        // HttpContext.Response.Redirect("http://localhost:5000/embed");
-        
-        
-        
-        // Console.WriteLine(r);
-        return Ok("q");
-        
-
-        // return Ok(Request.GetDisplayUrl() + " | " + Request.Path);
-    }
-
-    [HttpGet]
-    [Route("/bot/nebot")]
-    [AllowAnonymous]
-    public IActionResult authbot()
-    {
-        return Ok("!");
+        return StatusCode((int)r.StatusCode, r.ReasonPhrase);
     }
 }

@@ -14,7 +14,7 @@ public class Settings
         using (StreamReader streamReader = new StreamReader(JsonPath)) 
             jsonAsString = streamReader.ReadToEnd();
         
-        _settingsEntity = JsonConvert.DeserializeObject<SettingsEntity>(jsonAsString);
+        _settingsEntity = JsonConvert.DeserializeObject<SettingsEntity>(jsonAsString)!;
         return _settingsEntity;
     }
 
@@ -32,9 +32,10 @@ public class Settings
 
 public class SettingsEntity
 {
-    public string Token;
-    public ulong MessageId;
-    public string MessageText;
-    public ulong MentionChannelId;
-    public Dictionary<string, ulong> EmoteAndRole;
+    public string Token { get; set; }
+    public ulong MessageId { get; set; }
+    public string MessageText { get; set;}
+    public ulong MentionChannelId { get; set; }
+    public ulong NewsChannelId { get; set; }
+    public Dictionary<string, ulong> EmoteAndRole { get; set; }
 }

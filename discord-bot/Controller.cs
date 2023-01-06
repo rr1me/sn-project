@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Discord;
 using Discord.WebSocket;
+using discordBot.Data;
 using Microsoft.AspNetCore.Mvc;
 using myGreeterBot.Entities;
 
@@ -11,27 +12,20 @@ namespace myGreeterBot;
 public class Controller : ControllerBase
 {
     private readonly DiscordSocketClient _client;
+    private readonly Settings _settings;
 
-    public Controller(DiscordSocketClient client)
+    public Controller(DiscordSocketClient client, Settings settings)
     {
         _client = client;
+        _settings = settings;
     }
 
     [HttpPost("embed")]
-    public async Task<IActionResult> Embed([FromBody] EmbedEntity embedEntity)
+    public IActionResult Embed([FromBody] EmbedEntity embedEntity)
     {
-        // HttpRequestRewindExtensions.EnableBuffering(HttpContext.Request);
-        //
-        // HttpContext.Request.EnableBuffering();
-        //
-        // using var reader = new StreamReader(HttpContext.Request.BodyReader.AsStream());
-        // // reader.BaseStream.Seek(0, SeekOrigin.Begin); 
-        // var body = await reader.ReadToEndAsync();
-        //
-        //
-        // Console.WriteLine(body);
 
-        var channel = _client.GetChannel(1050814965004644413) as IMessageChannel;
+        var settingsEntity = _settings._settingsEntity;
+        var channel = _client.GetChannel(settingsEntity.NewsChannelId) as IMessageChannel;
 
         var embed = new EmbedBuilder();
 
@@ -41,15 +35,25 @@ public class Controller : ControllerBase
         var embedFields = embedEntity.Fields.Select(field =>
             new EmbedFieldBuilder().WithName(field.Title).WithValue(field.Text).WithIsInline(field.Inline));
 
+        var embedAuthor = new EmbedAuthorBuilder().WithName(embedEntity.Author.Name).WithUrl(embedEntity.Author.URL)
+            .WithIconUrl(embedEntity.Author.Icon_URL);
+
+        var embedFooter = new EmbedFooterBuilder().WithText(embedEntity.Footer.Text)
+            .WithIconUrl(embedEntity.Footer.Icon_URL);
+
         embed.WithTitle(embedEntity.Title)
             .WithDescription(embedEntity.Description)
             .WithUrl(embedEntity.URL)
             .WithColor(color[0], color[1], color[2])
-            .WithFields(embedFields);
+            .WithFields(embedFields)
+            // .WithTimestamp();
+            .WithImageUrl(embedEntity.Image.URL)
+            .WithThumbnailUrl(embedEntity.Thumbnail.URL)
+            .WithAuthor(embedAuthor)
+            .WithFooter(embedFooter);
 
         channel?.SendMessageAsync("", false, embed.Build());
-
-
-        return Ok("O HI");
+        
+        return Ok("News sent");
     }
 }

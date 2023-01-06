@@ -30,17 +30,17 @@ const EmbedConstructor = () => {
 
     const dispatch = useDispatch();
 
-    const {title, description, url, color, fields, timestamp, image, thumbnail, author, footer} = useSelector(state => state.embedSlice);
+    const {data: {title, description, url, color, fields, timestamp, image, thumbnail, author, footer}, message} = useSelector(state => state.embedSlice);
 
     const handleAnyField = type => e => dispatch(setAnyField({type:type, value:e.target.value}));
 
     const addHandle = () => dispatch(addField());
 
-    const footerHandler = type => e => dispatch(setFooter({type:type, value:e.target.value}))
+    const footerHandler = type => e => dispatch(setFooter({type:type, value:e.target.value}));
 
     const getFields = () => {
         return fields.map((v, i) => {
-            console.log(v);
+            // console.log(v);
             return (
                 <div className='embedField' key={i} style={v.inline ? {display: 'inline-block', paddingRight: 16} : null}>
                     <div className='title'>{v.title}</div>
@@ -48,11 +48,9 @@ const EmbedConstructor = () => {
                 </div>
             )
         })
-    }
+    };
 
-    const sendBtnHandle = () => {
-        dispatch(sendEmbedThunk());
-    }
+    const sendBtnHandle = () => dispatch(sendEmbedThunk());
 
     return (
         <div className='embedConstructor'>
@@ -143,6 +141,7 @@ const EmbedConstructor = () => {
 
                 <div className='constructorHandle'>
                     <button className='btn sendBtn' onClick={sendBtnHandle}>Send news</button>
+                    {message ? <b>{message}</b> : null}
                 </div>
 
             </div>
