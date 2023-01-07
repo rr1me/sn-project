@@ -146,6 +146,8 @@ $taBorder: 2px solid green
     outline: none
     &:focus
       border-color: $gray !important
+    &:disabled
+      opacity: 0.4
 
   .block
     display: flex
@@ -171,6 +173,14 @@ $taBorder: 2px solid green
     display: flex
     flex-direction: column
     gap: 15px
+
+    .checkbox
+      display: flex
+      font: 500 16px ScientificCalculator
+      letter-spacing: -4px
+      accent-color: var(--color-dark-green)
+      .checkboxLabel
+        word-spacing: 10px
 
     .footer
       .footerFields
@@ -215,15 +225,6 @@ $taBorder: 2px solid green
           gap: 5px
 
           overflow: visible
-
-          .inline
-            display: flex
-            font: 500 16px ScientificCalculator
-            letter-spacing: -3px
-            .checkbox
-              height: 15px
-              width: 15px
-              accent-color: var(--color-dark-green)
 
           .removeBtn
             grid-column-start: 2

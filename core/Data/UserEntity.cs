@@ -4,8 +4,6 @@ namespace core.Data;
 
 public class UserEntity
 {
-    // [Key]
-    // public int Id { get; set; }
     [Key]
     public string Username { get; set; }
     public string Password { get; set; }

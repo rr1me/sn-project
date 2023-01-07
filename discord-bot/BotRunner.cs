@@ -65,6 +65,19 @@ public class BotRunner
         await _client.StartAsync();
         await _commands.AddModulesAsync(assembly: Assembly.GetEntryAssembly(), services: serviceProvider);
 
+
+        app.Use(async (context, next) =>
+        {
+            if (context.Request.Host.Host != "localhost")
+            {
+                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await context.Response.WriteAsync("Unauthorized");
+                return;
+            }
+
+            await next.Invoke();
+        });
+
         await app.RunAsync();
     }
 }

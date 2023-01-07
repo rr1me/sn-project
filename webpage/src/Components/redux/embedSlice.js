@@ -62,7 +62,13 @@ const validateEmbed = (embed) => {
     if (!fieldCheck)
         return [[], "Every field has to contain both title and text"];
 
-    if (author.name === '' && (author.url !== '' || author.icon_url))
+    if (author.url !== ''){
+        const r = /^(ftp|http|https):\/\/[^ "]+$/;
+        if (!r.test(author.url))
+            return [fields, "Not valid author URL"]
+    }
+
+    if (author.name === '' && (author.url !== '' || author.icon_url !== ''))
         return [[], "Author has to contain name if you want it element to show"];
 
     return [{...embed, fields: fields}, null];
@@ -77,21 +83,21 @@ const fieldTemplate = () => {
     }
 }
 
-const fourInputsFieldTemplate = isAuthor => {
-    return isAuthor ?
-        {
-            name: '',
-            url: '',
-            icon_url: '',
-            proxy_icon_url: ''
-        } :
-        {
-            url: '',
-            proxy_url: '',
-            height: '',
-            width: ''
-        }
-}
+// const fourInputsFieldTemplate = isAuthor => {
+//     return isAuthor ?
+//         {
+//             name: '',
+//             url: '',
+//             icon_url: '',
+//             proxy_icon_url: ''
+//         } :
+//         {
+//             url: '',
+//             proxy_url: '',
+//             height: '',
+//             width: ''
+//         }
+// }
 
 const embedSlice = createSlice({
     name: 'embedSlice',
@@ -102,11 +108,15 @@ const embedSlice = createSlice({
             url: '',
             color: '#00ff00',
             fields: [fieldTemplate()],
-            timestamp: '',
+            timestamp: {
+                isCurrent: false,
+                value: ''
+            },
             image: '',
             thumbnail: '',
             author: {
                 name: '',
+                url: '',
                 icon_url: ''
             },
             footer:{
@@ -131,7 +141,7 @@ const embedSlice = createSlice({
             const {index, type, value} = payload;
             state.data.fields[index][type] = value;
         },
-        twoInputsReducer(state, {payload}){
+        twoInputReducer(state, {payload}){
             const {state:stateName, type, value} = payload;
             state.data[stateName][type] = value
         }

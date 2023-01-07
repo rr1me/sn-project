@@ -36,8 +36,6 @@ const EmbedConstructor = () => {
 
     const addHandle = () => dispatch(addField());
 
-    // const footerHandler = type => e => dispatch(setFooter({type:type, value:e.target.value}));
-
     const getFields = () => {
         return fields.map((v, i) => {
             // console.log(v);
@@ -55,8 +53,8 @@ const EmbedConstructor = () => {
     const twoInputHandler = (state, type) => e => dispatch(twoInputReducer({
         state: state,
         type: type,
-        value: e.target.value
-    }))
+        value: type === 'isCurrent' ? e.target.checked : e.target.value
+    }));
 
     return (
         <div className='embedConstructor'>
@@ -79,24 +77,21 @@ const EmbedConstructor = () => {
                     </div>
                 </div>
                 Timestamp
-                <input type='text' value={timestamp} onChange={handleAnyField('timestamp')}/>
+                <input disabled={timestamp.isCurrent} type='text' placeholder='Ticks' value={timestamp.value} onChange={twoInputHandler('timestamp', 'value')}/>
+                <div className='checkbox'>
+                    <input type='checkbox' value={timestamp.isCurrent} onChange={twoInputHandler('timestamp', 'isCurrent')}/>
+                    <label className='checkboxLabel'>Current timestamp</label>
+                </div>
                 Image URL
                 <input type='text' value={image} onChange={handleAnyField('image')}/>
-                {/*<div className='image'>*/}
-                {/*    <input type='text' value={image} onChange={handleAnyField('image')}/>*/}
-                {/*</div>*/}
                 Thumbnail URL
-                {/*<div className='thumbnail'>*/}
-                {/*    /!*<FourInputsElement object={thumbnail} state={'thumbnail'} dispatch={dispatch}/>*!/*/}
-                {/*    <input type='text' value={thumbnail} onChange={handleAnyField('thumbnail')}/>*/}
-                {/*</div>*/}
                 <input type='text' value={thumbnail} onChange={handleAnyField('thumbnail')}/>
                 Author
                 <div className='author block'>
                     <div className='tab'/>
-                    {/*<FourInputsElement object={author} state={'author'} dispatch={dispatch} isAuthor={true}/>*/}
                     <div>
                         <input type='text' value={author.name} placeholder='Name' onChange={twoInputHandler('author', 'name')}/>
+                        <input type='text' value={author.url} placeholder='Author URL' onChange={twoInputHandler('author', 'url')}/>
                         <input type='text' value={author.icon_url} placeholder='Icon URL' onChange={twoInputHandler('author', 'icon_url')}/>
                     </div>
                 </div>
@@ -106,7 +101,6 @@ const EmbedConstructor = () => {
                     <div className='footerFields'>
                         {useMemoArea(footer.text, twoInputHandler('footer', 'text'), 'textarea', 'text')}
                         <input type='text' placeholder='Icon URL' value={footer.icon_url} onChange={twoInputHandler('footer', 'icon_url')}/>
-                        {/*<input type='text' placeholder='Proxy icon URL' value={footer.proxy_icon_url} onChange={footerHandler('proxy_icon_url')}/>*/}
                     </div>
                 </div>
             </div>
@@ -160,25 +154,6 @@ const EmbedConstructor = () => {
     )
 };
 
-// const FourInputsElement = memo(({object, state, dispatch, isAuthor}) => {
-//     const FourInputsHandler = type => e => {
-//         dispatch(fourInputsReducer({
-//             state: state,
-//             type: type,
-//             value: e.target.value
-//         }))
-//     }
-//
-//     return (
-//         <div className='imageFields'>
-//             <input type='text' placeholder={isAuthor ? 'Name' : 'URL'} value={object[isAuthor ? 'name' : 'url']} onChange={FourInputsHandler(isAuthor ? 'name' : 'url')}/>
-//             <input type='text' placeholder={isAuthor ? 'URL' : 'Proxy URL'} value={object[isAuthor ? 'url' : 'proxy_url']} onChange={FourInputsHandler(isAuthor ? 'url' : 'proxy_url')}/>
-//             <input type='text' placeholder={isAuthor ? 'Icon URL' : 'Height'} value={object[isAuthor ? 'icon_url' : 'height']} onChange={FourInputsHandler(isAuthor ? 'icon_url' : 'height')}/>
-//             <input type='text' placeholder={isAuthor ? 'Proxy icon URL' : 'Width'} value={object[isAuthor ? 'proxy_icon_url' : 'width']} onChange={FourInputsHandler(isAuthor ? 'proxy_icon_url' : 'width')}/>
-//         </div>
-//     )
-// });
-
 const Field = memo(({id, index, title, text, inline, dispatch}) => {
     const handleRemove = () => dispatch(removeField(id));
 
@@ -194,9 +169,9 @@ const Field = memo(({id, index, title, text, inline, dispatch}) => {
         <div className='fieldBlock'>
             {useMemoArea(title, handleFieldBlock('title'), null, 'Field title')}
             {useMemoArea(text, handleFieldBlock('text'), null, 'Field text')}
-            <div className='inline'>
-                <input type='checkbox' className='checkbox' checked={inline} onChange={handleFieldBlock('inline', true)}/>
-                <label className='label'>Inline</label>
+            <div className='checkbox'>
+                <input type='checkbox' className='checkboxInput' checked={inline} onChange={handleFieldBlock('inline', true)}/>
+                <label className='checkboxLabel'>Inline</label>
             </div>
             <button className='btn removeBtn' onClick={handleRemove}>x</button>
         </div>

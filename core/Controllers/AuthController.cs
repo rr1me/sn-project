@@ -1,5 +1,4 @@
 ﻿using core.Authentication;
-using core.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,20 +8,15 @@ namespace core.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly GatewayAuthenticationHandler _authenticationHandler;
-    private readonly IServiceScopeFactory _scopeFactory;
 
-    public AuthController(GatewayAuthenticationHandler authenticationHandler, IServiceScopeFactory scopeFactory)
+    public AuthController(GatewayAuthenticationHandler authenticationHandler)
     {
         _authenticationHandler = authenticationHandler;
-        _scopeFactory = scopeFactory;
-        // _db = _db = scopeFactory.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
     }
 
     [HttpPost("/login")]
-    // [AllowAnonymous]
     public IActionResult Login([FromBody]UserModel userModel)
     {
-        // HttpContext.Response.Redirect();
         var isAuthenticated = _authenticationHandler.Authenticate(userModel, HttpContext, out var user);
         if (!isAuthenticated)
             return Unauthorized("Authentication error");
@@ -46,13 +40,6 @@ public class AuthController : ControllerBase
     public IActionResult Validate()
     {
         return Ok("All cool");
-    }
-
-    [HttpPost("/try")]
-    [Authorize(Roles = "Admin")]
-    public IActionResult TryItOn()
-    {
-        return Ok("hi");
     }
 }
 

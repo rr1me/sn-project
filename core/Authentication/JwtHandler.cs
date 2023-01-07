@@ -38,7 +38,7 @@ public class JwtHandler
     public string GenerateAccessToken(UserEntity user, out DateTimeOffset accessTokenExpires)
     {
 
-        accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(10);
+        accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(30);
         
         return JwtBuilder.Create().WithAlgorithm(accessTokenAlgorithm)
             .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
@@ -50,7 +50,7 @@ public class JwtHandler
 
     public string GenerateRefreshToken(UserEntity user, out DateTimeOffset refreshTokenExpires)
     {
-        refreshTokenExpires = DateTimeOffset.UtcNow.AddDays(7);
+        refreshTokenExpires = DateTimeOffset.UtcNow.AddDays(3);
 
         return JwtBuilder.Create().WithAlgorithm(refreshTokenAlgorithm)
             .AddClaim("exp", refreshTokenExpires.ToUnixTimeSeconds())

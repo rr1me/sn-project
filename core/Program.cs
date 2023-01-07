@@ -1,8 +1,6 @@
-using core;
+using System.Text.Json.Serialization;
 using core.Authentication;
 using core.Data;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Server.Kestrel.Core.Internal.Http;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,7 +29,10 @@ builder.Services.AddAuthorization(
     }
 );
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 
 builder.Services.AddHttpClient();
 

@@ -47,6 +47,9 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
             accessToken = _jwtHandler.GenerateAccessToken(user, out _);
             Response.Cookies.Append("accessToken", accessToken);
 
+            refreshToken = _jwtHandler.GenerateRefreshToken(user, out _);
+            Response.Cookies.Append("refreshToken", refreshToken); //trying to get into SSO
+
             role = user.Role.ToString();
         }
         else if (string.IsNullOrEmpty(refreshToken) || !isRefreshTokenValid)
@@ -54,7 +57,7 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
             DeleteCookies();
             return AuthenticateResult.Fail("No valid refresh token");
         }
-        else if (!accessTokenPayload["username"].ToString()!.Equals(refreshTokenPayload["username"].ToString()!))
+        else if (!accessTokenPayload["username"].ToString()!.Equals(refreshTokenPayload["username"].ToString()))
         {
             Console.WriteLine(accessTokenPayload["username"]);
             Console.WriteLine(refreshTokenPayload["username"]);

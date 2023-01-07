@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace core.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Roles = "Admin")]
 public class GatewayController : ControllerBase
 {
     private readonly IHttpClientFactory _clientFactory;
@@ -17,8 +17,7 @@ public class GatewayController : ControllerBase
 
     [Route("/bot/{*resource}")]
     public async Task<IActionResult> BotGateway(string resource) => await RoutingHandler("http://localhost:5000/" + resource);
-
-    // [HttpGet]
+    
     [Route("/non-auth/{*q}")]   
     [AllowAnonymous]
     public IActionResult TestGateway(string q)

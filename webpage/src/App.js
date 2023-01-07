@@ -15,9 +15,9 @@ function App() {
 
 
         <Route path="/login" element={<ElementWrapper> <Login/> </ElementWrapper>}/>
-        <Route path="/me" element={<ElementWrapper> <PersonalAccount/> </ElementWrapper>}/>
+        <Route path="/me" element={<ElementWrapper authenticated> <PersonalAccount/> </ElementWrapper>}/>
 
-        <Route path='/embed' element={<ElementWrapper> <EmbedConstructor/> </ElementWrapper>}/>
+        <Route path='/embed' element={<ElementWrapper authenticated role='Admin'> <EmbedConstructor/> </ElementWrapper>}/>
 
 
         <Route path="*" element={<ElementWrapper>404?</ElementWrapper>}/>

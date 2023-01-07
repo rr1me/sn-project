@@ -9,10 +9,10 @@ public class EmbedEntity
     
     public List<Field> Fields { get; set; }
 
-    public string Timestamp { get; set; }
+    public Timestamp Timestamp { get; set; }
     
-    public FIEntity Image { get; set; }
-    public FIEntity Thumbnail { get; set; }
+    public string Image { get; set; }
+    public string Thumbnail { get; set; }
     public Author Author { get; set; }
     public Footer Footer { get; set; }
 }

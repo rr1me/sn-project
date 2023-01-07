@@ -46,11 +46,23 @@ public class Controller : ControllerBase
             .WithUrl(embedEntity.URL)
             .WithColor(color[0], color[1], color[2])
             .WithFields(embedFields)
-            // .WithTimestamp();
-            .WithImageUrl(embedEntity.Image.URL)
-            .WithThumbnailUrl(embedEntity.Thumbnail.URL)
+            .WithImageUrl(embedEntity.Image)
+            .WithThumbnailUrl(embedEntity.Thumbnail)
             .WithAuthor(embedAuthor)
             .WithFooter(embedFooter);
+        
+        // embed.WithCurrentTimestamp();
+
+        var timestampValue = embedEntity.Timestamp.Value;
+        switch (embedEntity.Timestamp.IsCurrent)
+        {
+            case true:
+                embed.WithCurrentTimestamp();
+                break;
+            case false when !string.IsNullOrEmpty(timestampValue):
+                embed.WithTimestamp(new DateTimeOffset(long.Parse(timestampValue), TimeSpan.Zero));
+                break;
+        }
 
         channel?.SendMessageAsync("", false, embed.Build());
         
