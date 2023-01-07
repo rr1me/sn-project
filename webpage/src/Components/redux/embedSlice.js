@@ -103,13 +103,15 @@ const embedSlice = createSlice({
             color: '#00ff00',
             fields: [fieldTemplate()],
             timestamp: '',
-            image: fourInputsFieldTemplate(false),
-            thumbnail: fourInputsFieldTemplate(false),
-            author: fourInputsFieldTemplate(true),
+            image: '',
+            thumbnail: '',
+            author: {
+                name: '',
+                icon_url: ''
+            },
             footer:{
                 text: '',
-                icon_url: '',
-                proxy_icon_url: ''
+                icon_url: ''
             }
         },
         message: ''
@@ -129,13 +131,9 @@ const embedSlice = createSlice({
             const {index, type, value} = payload;
             state.data.fields[index][type] = value;
         },
-        fourInputsReducer(state, {payload}){
+        twoInputsReducer(state, {payload}){
             const {state:stateName, type, value} = payload;
             state.data[stateName][type] = value
-        },
-        setFooter(state, {payload}){
-            const {type, value} = payload;
-            state.data.footer[type] = value;
         }
     },
     extraReducers: builder => {

@@ -6,7 +6,7 @@ import {embedActions, sendEmbedThunk} from "../redux/embedSlice";
 
 import avatar from './avatar.png';
 
-const {addField, removeField, setAnyField, setFieldBlock, fourInputsReducer, setFooter} = embedActions;
+const {addField, removeField, setAnyField, setFieldBlock, twoInputReducer} = embedActions;
 
 const EmbedConstructor = () => {
     const previewRef = useRef();
@@ -36,7 +36,7 @@ const EmbedConstructor = () => {
 
     const addHandle = () => dispatch(addField());
 
-    const footerHandler = type => e => dispatch(setFooter({type:type, value:e.target.value}));
+    // const footerHandler = type => e => dispatch(setFooter({type:type, value:e.target.value}));
 
     const getFields = () => {
         return fields.map((v, i) => {
@@ -52,6 +52,12 @@ const EmbedConstructor = () => {
 
     const sendBtnHandle = () => dispatch(sendEmbedThunk());
 
+    const twoInputHandler = (state, type) => e => dispatch(twoInputReducer({
+        state: state,
+        type: type,
+        value: e.target.value
+    }))
+
     return (
         <div className='embedConstructor'>
 
@@ -61,8 +67,7 @@ const EmbedConstructor = () => {
                 Description
                 {useMemoArea(description, handleAnyField('description'), 'textarea')}
                 URL
-                {/*{useMemoArea(url, handleAnyField('url'), 'textarea')}*/}
-                <input className='url' value={url} onChange={handleAnyField('url')}/>
+                <input value={url} onChange={handleAnyField('url')}/>
                 Color
                 <input className='colorPicker' type='color' value={color} onChange={handleAnyField('color')}/>
                 Fields
@@ -75,28 +80,33 @@ const EmbedConstructor = () => {
                 </div>
                 Timestamp
                 <input type='text' value={timestamp} onChange={handleAnyField('timestamp')}/>
-                Image
-                <div className='image block'>
-                    <div className='tab'/>
-                    <FourInputsElement object={image} state={'image'} dispatch={dispatch}/>
-                </div>
-                Thumbnail
-                <div className='thumbnail block'>
-                    <div className='tab'/>
-                    <FourInputsElement object={thumbnail} state={'thumbnail'} dispatch={dispatch}/>
-                </div>
+                Image URL
+                <input type='text' value={image} onChange={handleAnyField('image')}/>
+                {/*<div className='image'>*/}
+                {/*    <input type='text' value={image} onChange={handleAnyField('image')}/>*/}
+                {/*</div>*/}
+                Thumbnail URL
+                {/*<div className='thumbnail'>*/}
+                {/*    /!*<FourInputsElement object={thumbnail} state={'thumbnail'} dispatch={dispatch}/>*!/*/}
+                {/*    <input type='text' value={thumbnail} onChange={handleAnyField('thumbnail')}/>*/}
+                {/*</div>*/}
+                <input type='text' value={thumbnail} onChange={handleAnyField('thumbnail')}/>
                 Author
                 <div className='author block'>
                     <div className='tab'/>
-                    <FourInputsElement object={author} state={'author'} dispatch={dispatch} isAuthor={true}/>
+                    {/*<FourInputsElement object={author} state={'author'} dispatch={dispatch} isAuthor={true}/>*/}
+                    <div>
+                        <input type='text' value={author.name} placeholder='Name' onChange={twoInputHandler('author', 'name')}/>
+                        <input type='text' value={author.icon_url} placeholder='Icon URL' onChange={twoInputHandler('author', 'icon_url')}/>
+                    </div>
                 </div>
                 Footer
                 <div className='footer block'>
                     <div className='tab'/>
                     <div className='footerFields'>
-                        {useMemoArea(footer.text, footerHandler('text'), 'textarea', 'text')}
-                        <input type='text' placeholder='Icon URL' value={footer.icon_url} onChange={footerHandler('icon_url')}/>
-                        <input type='text' placeholder='Proxy icon URL' value={footer.proxy_icon_url} onChange={footerHandler('proxy_icon_url')}/>
+                        {useMemoArea(footer.text, twoInputHandler('footer', 'text'), 'textarea', 'text')}
+                        <input type='text' placeholder='Icon URL' value={footer.icon_url} onChange={twoInputHandler('footer', 'icon_url')}/>
+                        {/*<input type='text' placeholder='Proxy icon URL' value={footer.proxy_icon_url} onChange={footerHandler('proxy_icon_url')}/>*/}
                     </div>
                 </div>
             </div>
@@ -150,24 +160,24 @@ const EmbedConstructor = () => {
     )
 };
 
-const FourInputsElement = memo(({object, state, dispatch, isAuthor}) => {
-    const FourInputsHandler = type => e => {
-        dispatch(fourInputsReducer({
-            state: state,
-            type: type,
-            value: e.target.value
-        }))
-    }
-
-    return (
-        <div className='imageFields'>
-            <input type='text' placeholder={isAuthor ? 'Name' : 'URL'} value={object[isAuthor ? 'name' : 'url']} onChange={FourInputsHandler(isAuthor ? 'name' : 'url')}/>
-            <input type='text' placeholder={isAuthor ? 'URL' : 'Proxy URL'} value={object[isAuthor ? 'url' : 'proxy_url']} onChange={FourInputsHandler(isAuthor ? 'url' : 'proxy_url')}/>
-            <input type='text' placeholder={isAuthor ? 'Icon URL' : 'Height'} value={object[isAuthor ? 'icon_url' : 'height']} onChange={FourInputsHandler(isAuthor ? 'icon_url' : 'height')}/>
-            <input type='text' placeholder={isAuthor ? 'Proxy icon URL' : 'Width'} value={object[isAuthor ? 'proxy_icon_url' : 'width']} onChange={FourInputsHandler(isAuthor ? 'proxy_icon_url' : 'width')}/>
-        </div>
-    )
-});
+// const FourInputsElement = memo(({object, state, dispatch, isAuthor}) => {
+//     const FourInputsHandler = type => e => {
+//         dispatch(fourInputsReducer({
+//             state: state,
+//             type: type,
+//             value: e.target.value
+//         }))
+//     }
+//
+//     return (
+//         <div className='imageFields'>
+//             <input type='text' placeholder={isAuthor ? 'Name' : 'URL'} value={object[isAuthor ? 'name' : 'url']} onChange={FourInputsHandler(isAuthor ? 'name' : 'url')}/>
+//             <input type='text' placeholder={isAuthor ? 'URL' : 'Proxy URL'} value={object[isAuthor ? 'url' : 'proxy_url']} onChange={FourInputsHandler(isAuthor ? 'url' : 'proxy_url')}/>
+//             <input type='text' placeholder={isAuthor ? 'Icon URL' : 'Height'} value={object[isAuthor ? 'icon_url' : 'height']} onChange={FourInputsHandler(isAuthor ? 'icon_url' : 'height')}/>
+//             <input type='text' placeholder={isAuthor ? 'Proxy icon URL' : 'Width'} value={object[isAuthor ? 'proxy_icon_url' : 'width']} onChange={FourInputsHandler(isAuthor ? 'proxy_icon_url' : 'width')}/>
+//         </div>
+//     )
+// });
 
 const Field = memo(({id, index, title, text, inline, dispatch}) => {
     const handleRemove = () => dispatch(removeField(id));
