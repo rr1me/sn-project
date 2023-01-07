@@ -17,14 +17,6 @@ public class GatewayController : ControllerBase
 
     [Route("/bot/{*resource}")]
     public async Task<IActionResult> BotGateway(string resource) => await RoutingHandler("http://localhost:5000/" + resource);
-    
-    [Route("/non-auth/{*q}")]   
-    [AllowAnonymous]
-    public IActionResult TestGateway(string q)
-    {
-        Console.WriteLine(q);
-        return Ok("!");
-    }
 
     private async  Task<IActionResult> RoutingHandler(string url)
     {

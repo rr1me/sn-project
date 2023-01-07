@@ -20,7 +20,6 @@ public class BotRunner
                 GatewayIntents.GuildPresences |
                 GatewayIntents.Guilds |
                 GatewayIntents.GuildMessages | GatewayIntents.MessageContent
-                // GatewayIntents.All
         };
         
         builder.Services

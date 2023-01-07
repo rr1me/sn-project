@@ -38,7 +38,6 @@ const EmbedConstructor = () => {
 
     const getFields = () => {
         return fields.map((v, i) => {
-            // console.log(v);
             return (
                 <div className='embedField' key={i} style={v.inline ? {display: 'inline-block', paddingRight: 16} : null}>
                     <div className='title'>{v.title}</div>

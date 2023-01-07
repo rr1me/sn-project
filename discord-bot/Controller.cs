@@ -50,8 +50,6 @@ public class Controller : ControllerBase
             .WithThumbnailUrl(embedEntity.Thumbnail)
             .WithAuthor(embedAuthor)
             .WithFooter(embedFooter);
-        
-        // embed.WithCurrentTimestamp();
 
         var timestampValue = embedEntity.Timestamp.Value;
         switch (embedEntity.Timestamp.IsCurrent)

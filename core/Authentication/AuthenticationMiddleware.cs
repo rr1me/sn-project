@@ -61,8 +61,7 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
         {
             Console.WriteLine(accessTokenPayload["username"]);
             Console.WriteLine(refreshTokenPayload["username"]);
-
-            // string str = refreshTokenPayload["username"];
+            
             Console.WriteLine(accessTokenPayload["username"] == refreshTokenPayload["username"]);
             Console.WriteLine(accessTokenPayload["username"].ToString()!.Equals(refreshTokenPayload["username"].ToString()!));
             

@@ -68,17 +68,6 @@ public class JwtHandler
             .Decode<IDictionary<string, object>>(token);
     }
 
-    // public bool ValidateToken(string token, TokenType type)
-    // {
-        // var algorithm = type == TokenType.ACCESS ? accessTokenAlgorithm : refreshTokenAlgorithm;
-        //
-        // new JwtValidator().
-        // var valid = JwtBuilder.Create()
-        //     .WithAlgorithm(algorithm)
-        //     .WithValidationParameters(ValidationParameters.Default);
-        // return false;
-    // }
-
     public bool TryDecodeToken(string token, TokenType type, out IDictionary<string, object> payload)
     {
         var algorithm = type == TokenType.Access ? accessTokenAlgorithm : refreshTokenAlgorithm;
