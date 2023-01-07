@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DatabaseContext>(x =>
 {
-    var connectionString = "server=localhost;user=root;password=root;database=sntestdb";
+    const string connectionString = "server=localhost;user=root;password=root;database=sntestdb";
     var serverVersion = ServerVersion.AutoDetect(connectionString);
     x.UseMySql(connectionString, serverVersion);
 });

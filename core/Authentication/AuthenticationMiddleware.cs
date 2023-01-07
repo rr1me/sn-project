@@ -10,20 +10,17 @@ public class GatewayAuthScheme : AuthenticationSchemeOptions { }
 
 public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
 {
-    private readonly IServiceScopeFactory _scopeFactory;
     private readonly JwtHandler _jwtHandler;
+    private readonly DatabaseContext _db;
 
-    public AuthenticationMiddleware(IOptionsMonitor<GatewayAuthScheme> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, JwtHandler jwtHandler, IServiceScopeFactory scopeFactory) 
-        : base(options, logger, encoder, clock)
+    public AuthenticationMiddleware(IOptionsMonitor<GatewayAuthScheme> options, ILoggerFactory logger, UrlEncoder encoder, ISystemClock clock, JwtHandler jwtHandler, DatabaseContext db) : base(options, logger, encoder, clock)
     {
         _jwtHandler = jwtHandler;
-        _scopeFactory = scopeFactory;
+        _db = db;
     }
-
+    
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
-        
         var accessToken = Request.Cookies.FirstOrDefault(x => x.Key == "accessToken").Value;
         var refreshToken = Request.Cookies.FirstOrDefault(x => x.Key == "refreshToken").Value;
         
@@ -36,7 +33,7 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
             if (string.IsNullOrEmpty(refreshToken) || !isRefreshTokenValid)
                 return AuthenticateResult.Fail("No valid access token or refresh token");
             
-            var user = db.Users.First(x => x.Username == refreshTokenPayload["username"].ToString());
+            var user = _db.Users.First(x => x.Username == refreshTokenPayload["username"].ToString());
 
             if (user.RefreshToken != refreshToken)
             {
@@ -65,16 +62,16 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
             Console.WriteLine(accessTokenPayload["username"] == refreshTokenPayload["username"]);
             Console.WriteLine(accessTokenPayload["username"].ToString()!.Equals(refreshTokenPayload["username"].ToString()!));
             
-            var firstUser = db.Users.FirstOrDefault(x => x.Username == accessTokenPayload["username"].ToString());
+            var firstUser = _db.Users.FirstOrDefault(x => x.Username == accessTokenPayload["username"].ToString());
             if (firstUser != null)
                 firstUser.RefreshToken = null;
 
-            var secondUser = db.Users.FirstOrDefault(x => x.Username == refreshTokenPayload["username"].ToString());
+            var secondUser = _db.Users.FirstOrDefault(x => x.Username == refreshTokenPayload["username"].ToString());
 
             if (secondUser != null)
                 secondUser.RefreshToken = null;
 
-            db.SaveChangesAsync();
+            _db.SaveChangesAsync();
             DeleteCookies();
             return AuthenticateResult.Fail("Both tokens challenged");
         }

@@ -5,19 +5,15 @@ namespace core.Authentication;
 
 public class GatewayAuthenticationHandler
 {
-    private readonly IServiceScopeFactory _scopeFactory;
     private readonly JwtHandler _jwtHandler;
 
-    public GatewayAuthenticationHandler(IServiceScopeFactory scopeFactory, JwtHandler jwtHandler)
+    public GatewayAuthenticationHandler(JwtHandler jwtHandler)
     {
-        _scopeFactory = scopeFactory;
         _jwtHandler = jwtHandler;
     }
 
-    public bool Authenticate(UserModel userModel, HttpContext context, out UserEntity? user)
+    public bool Authenticate(UserModel userModel, HttpContext context, out UserEntity? user, DatabaseContext db)
     {
-        var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
-        
         user = db.Users.FirstOrDefault(x =>x .Username == userModel.Username);
         if (user == null || !BCrypt.Net.BCrypt.Verify(userModel.Password, user.Password))
             return false;
@@ -47,7 +43,7 @@ public class GatewayAuthenticationHandler
         return true;
     }
 
-    public void RevokeRefreshToken(HttpContext context)
+    public void RevokeRefreshToken(HttpContext context, DatabaseContext db)
     {
         context.Response.Cookies.Delete("refreshToken");
         context.Response.Cookies.Delete("accessToken");
@@ -56,8 +52,6 @@ public class GatewayAuthenticationHandler
 
         if (string.IsNullOrEmpty(refreshToken)) return;
         
-        var db = _scopeFactory.CreateScope().ServiceProvider.GetRequiredService<DatabaseContext>();
-
         var user = db.Users.FirstOrDefault(x => x.RefreshToken == refreshToken);
 
         if (user == null) return;
