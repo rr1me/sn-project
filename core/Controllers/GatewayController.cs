@@ -9,10 +9,13 @@ namespace core.Controllers;
 public class GatewayController : ControllerBase
 {
     private readonly IHttpClientFactory _clientFactory;
+    
+    private readonly IWebHostEnvironment _env;
 
-    public GatewayController(IHttpClientFactory clientFactory)
+    public GatewayController(IHttpClientFactory clientFactory, IWebHostEnvironment env)
     {
         _clientFactory = clientFactory;
+        _env = env;
     }
 
     [Route("/bot/{*resource}")]
@@ -30,5 +33,13 @@ public class GatewayController : ControllerBase
         
         var r = await httpClient.SendAsync(request);
         return StatusCode((int)r.StatusCode, r.ReasonPhrase);
+    }
+
+    [HttpGet("/launcher")]
+    [AllowAnonymous]
+    public IActionResult GetLauncher()
+    {
+        var path = Path.Combine(_env.ContentRootPath, "Static/RadOsLauncher.exe");
+        return File(System.IO.File.OpenRead(path), "application/octet-stream", Path.GetFileName(path));
     }
 }

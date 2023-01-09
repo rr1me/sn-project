@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using core.Authentication;
 using core.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
