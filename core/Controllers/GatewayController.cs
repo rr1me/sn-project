@@ -9,19 +9,24 @@ namespace core.Controllers;
 public class GatewayController : ControllerBase
 {
     private readonly IHttpClientFactory _clientFactory;
-    
     private readonly IWebHostEnvironment _env;
+    private readonly IConfiguration _config;
 
-    public GatewayController(IHttpClientFactory clientFactory, IWebHostEnvironment env)
+    public GatewayController(IHttpClientFactory clientFactory, IWebHostEnvironment env, IConfiguration config)
     {
         _clientFactory = clientFactory;
         _env = env;
+        _config = config;
     }
 
     [Route("/bot/{*resource}")]
-    public async Task<IActionResult> BotGateway(string resource) => await RoutingHandler("http://localhost:5000/" + resource);
+    public async Task<IActionResult> BotGateway(string resource)
+    {
+        var botUrl = _config.GetSection("DiscordBotURL");
+        return await RoutingHandler(botUrl + resource);
+    }
 
-    private async  Task<IActionResult> RoutingHandler(string url)
+    private async Task<IActionResult> RoutingHandler(string url)
     {
         var stream = new StreamReader(HttpContext.Request.Body);
         var body = await stream.ReadToEndAsync();

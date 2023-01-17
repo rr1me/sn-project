@@ -2,13 +2,12 @@ using System.Text.Json.Serialization;
 using core.Authentication;
 using core.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DatabaseContext>(x =>
 {
-    const string connectionString = "server=localhost;user=root;password=root;database=sntestdb";
+    const string connectionString = "server=host.docker.internal;user=root;password=root;database=sntestdb";
     var serverVersion = ServerVersion.AutoDetect(connectionString);
     x.UseMySql(connectionString, serverVersion);
 });
@@ -43,5 +42,7 @@ app.MapControllers();
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+Console.WriteLine("HELLO");
 
 app.Run();
