@@ -19,22 +19,10 @@ public class GatewayAuthenticationHandler
             return false;
 
         var refreshToken = _jwtHandler.GenerateRefreshToken(user, out var refreshTokenExpires);
-        var refreshTokenCookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            Expires = refreshTokenExpires
-        };
-        context.Response.Cookies.Append("refreshToken", refreshToken, refreshTokenCookieOptions);
+        context.Response.Cookies.Append("refreshToken", refreshToken, _jwtHandler.GetCookieOptions(refreshTokenExpires));
         
         var accessToken = _jwtHandler.GenerateAccessToken(user, out var accessTokenExpires);
-        var accessTokenCookieOptions = new CookieOptions
-        {
-            HttpOnly = true,
-            Secure = true,
-            Expires = accessTokenExpires
-        };
-        context.Response.Cookies.Append("accessToken", accessToken, accessTokenCookieOptions);
+        context.Response.Cookies.Append("accessToken", accessToken, _jwtHandler.GetCookieOptions(accessTokenExpires));
         
         user.RefreshToken = refreshToken;
         db.Users.Update(user);

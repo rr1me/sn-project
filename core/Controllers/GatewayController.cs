@@ -22,8 +22,9 @@ public class GatewayController : ControllerBase
     [Route("/bot/{*resource}")]
     public async Task<IActionResult> BotGateway(string resource)
     {
+        
         var botUrl = _config.GetSection("DiscordBotURL");
-        return await RoutingHandler(botUrl + resource);
+        return await RoutingHandler(botUrl.Value + resource);
     }
 
     private async Task<IActionResult> RoutingHandler(string url)

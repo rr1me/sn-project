@@ -41,11 +41,8 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
                 return AuthenticateResult.Fail("Challenged refresh token");
             }
             
-            accessToken = _jwtHandler.GenerateAccessToken(user, out _);
-            Response.Cookies.Append("accessToken", accessToken);
-
-            refreshToken = _jwtHandler.GenerateRefreshToken(user, out _);
-            Response.Cookies.Append("refreshToken", refreshToken); //trying to get into SSO
+            accessToken = _jwtHandler.GenerateAccessToken(user, out var accessTokenExpires);
+            Response.Cookies.Append("accessToken", accessToken, _jwtHandler.GetCookieOptions(accessTokenExpires));
 
             role = user.Role.ToString();
         }

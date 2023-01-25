@@ -38,7 +38,7 @@ public class JwtHandler
     public string GenerateAccessToken(UserEntity user, out DateTimeOffset accessTokenExpires)
     {
 
-        accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(30);
+        accessTokenExpires = DateTimeOffset.UtcNow.AddMinutes(5);
         
         return JwtBuilder.Create().WithAlgorithm(accessTokenAlgorithm)
             .AddClaim("exp", accessTokenExpires.ToUnixTimeSeconds())
@@ -88,6 +88,14 @@ public class JwtHandler
 
         return true;
     }
+
+    public CookieOptions GetCookieOptions(DateTimeOffset expiration) => 
+        new ()
+        {
+            HttpOnly = true,
+            Secure = true,
+            Expires = expiration
+        };
 }
 
 public enum TokenType
