@@ -6,7 +6,7 @@ public class Settings
 {
     public SettingsEntity _settingsEntity;
     
-    private readonly string JsonPath = Environment.CurrentDirectory + @"\Data\Settings.json";
+    private readonly string JsonPath = Path.Combine(Environment.CurrentDirectory, "Data", "Settings.json");
     
     public dynamic GetSettings()
     {

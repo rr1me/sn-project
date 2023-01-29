@@ -1,19 +1,23 @@
 using System.Text.Json.Serialization;
+using core;
 using core.Authentication;
 using core.Data;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DatabaseContext>(x =>
 {
-    const string connectionString = "server=host.docker.internal;user=root;password=root;database=sntestdb";
+    var connectionString = builder.Configuration.GetSection("ConnectionString").Value;
     var serverVersion = ServerVersion.AutoDetect(connectionString);
     x.UseMySql(connectionString, serverVersion);
 });
 
 builder.Services.AddSingleton<GatewayAuthenticationHandler>();
 builder.Services.AddSingleton<JwtHandler>();
+
+builder.Services.AddScoped<InternalControls>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -36,6 +40,11 @@ builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
 app.UseRouting();
 
 app.MapControllers();
@@ -43,6 +52,8 @@ app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
-Console.WriteLine("HELLO");
+var scope = app.Services.CreateScope();
+var ctrl = scope.ServiceProvider.GetRequiredService<InternalControls>();
+ctrl.Initialize();
 
 app.Run();
