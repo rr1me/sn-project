@@ -25,7 +25,7 @@ const Header = () => {
             <div className='navigation'>
                 <Link to='/'>главная</Link>
                 <Link to='/banlist'>список блокировок</Link>
-                <Link to='/#'>скачать клиент</Link>
+                <a href='/api/launcher'>скачать клиент</a>
                 <a href='https://discord.gg/N7DW7c4GJ3'>discord</a>
                 <PrivateAreaAndLogout user={user}/>
             </div>
