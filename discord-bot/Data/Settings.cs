@@ -33,8 +33,13 @@ public class Settings
 public class SettingsEntity
 {
     public string Token { get; set; }
+    public ulong GuildId { get; set; }
+    
     public ulong MessageId { get; set; }
+    public string MessageTitle { get; set; }
     public string MessageText { get; set;}
+    public string MessageFooter { get; set; }
+
     public ulong MentionChannelId { get; set; }
     public ulong NewsChannelId { get; set; }
     public Dictionary<string, ulong> EmoteAndRole { get; set; }

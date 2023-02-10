@@ -93,7 +93,6 @@ public class JwtHandler
         new ()
         {
             HttpOnly = true,
-            Secure = true,
             Expires = expiration
         };
 }
