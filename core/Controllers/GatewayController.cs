@@ -45,7 +45,7 @@ public class GatewayController : ControllerBase
     [AllowAnonymous]
     public IActionResult GetLauncher()
     {
-        var path = Path.Combine(_env.ContentRootPath, "Static", "RadOSLauncher.exe");
+        var path = Path.Combine(_env.ContentRootPath, "Static", "SmollNet.exe");
         return File(System.IO.File.OpenRead(path), "application/octet-stream", Path.GetFileName(path));
     }
 }
