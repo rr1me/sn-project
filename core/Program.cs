@@ -52,8 +52,8 @@ app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var scope = app.Services.CreateScope();
-var ctrl = scope.ServiceProvider.GetRequiredService<InternalControls>();
-ctrl.Initialize();
+// var scope = app.Services.CreateScope();
+// var ctrl = scope.ServiceProvider.GetRequiredService<InternalControls>();
+// ctrl.Initialize();
 
 app.Run();

@@ -41,7 +41,7 @@ public class InternalControls
         db.SaveChanges();
         Console.WriteLine("Root user credentials(Username | Password): root | "+unencrypted);
         
-        new Thread(ConsoleReader).Start();
+        new Task(ConsoleReader).Start();
     }
 
     private string GeneratePass(out string unencrypted)
@@ -50,7 +50,7 @@ public class InternalControls
         var chars = new List<char>();
         for (var i = 0; i < 10; i++)
         {
-            var row = rand.Next(0, 3);
+            var row = rand.Next(0, 4);
             chars.Add(_randomChars[row][rand.Next(0, _randomChars[row].Length)]);
         }
 
