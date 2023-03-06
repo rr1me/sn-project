@@ -10,11 +10,8 @@
       <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
       <PackageReference Include="JWT" Version="10.0.0-beta9" />
       <PackageReference Include="Newtonsoft.Json" Version="13.0.3-beta1" />
+      <PackageReference Include="NReco.Logging.File" Version="1.1.6" />
       <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0-silver.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Static" />
     </ItemGroup>
 
 </Project>

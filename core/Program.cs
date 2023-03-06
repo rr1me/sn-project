@@ -7,6 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging(x =>
+{
+    x.AddFile("app.log", x=>x.MinLevel = LogLevel.Debug);
+});
+
 builder.Services.AddDbContext<DatabaseContext>(x =>
 {
     var connectionString = builder.Configuration.GetSection("ConnectionString").Value;
@@ -55,5 +60,21 @@ app.UseAuthorization();
 // var scope = app.Services.CreateScope();
 // var ctrl = scope.ServiceProvider.GetRequiredService<InternalControls>();
 // ctrl.Initialize();
+
+app.Use(async (context, next) =>
+{
+    var logger = app.Logger;
+
+    var requestPath = context.Request.Path;
+    var requestMethod = context.Request.Method;
+    var remoteIp = context.Connection.RemoteIpAddress.ToString();
+    logger.LogInformation($"Starting: {requestPath} | Method: {requestMethod} | RemoteIp: {remoteIp} _______________________________________________________________");
+    logger.LogInformation($"Headers: {string.Join(" | ", context.Request.Headers.ToArray())} _______________________________________________________________");
+    
+    await next.Invoke();
+
+    var responseStatusCode = context.Response.StatusCode;
+    logger.LogInformation($"Ending: {requestPath} | Code: {responseStatusCode} __________________________________________________________________" );
+});
 
 app.Run();
