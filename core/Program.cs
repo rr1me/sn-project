@@ -1,3 +1,4 @@
+using System.Net;
 using System.Text.Json.Serialization;
 using core;
 using core.Authentication;
@@ -22,7 +23,7 @@ builder.Services.AddDbContext<DatabaseContext>(x =>
 builder.Services.AddSingleton<GatewayAuthenticationHandler>();
 builder.Services.AddSingleton<JwtHandler>();
 
-builder.Services.AddScoped<InternalControls>();
+builder.Services.AddTransient<InternalControls>();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -47,7 +48,7 @@ var app = builder.Build();
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.All
 });
 
 app.UseRouting();
@@ -57,9 +58,9 @@ app.MapControllers();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// var scope = app.Services.CreateScope();
-// var ctrl = scope.ServiceProvider.GetRequiredService<InternalControls>();
-// ctrl.Initialize();
+var scope = app.Services.CreateScope();
+var ctrl = scope.ServiceProvider.GetRequiredService<InternalControls>();
+ctrl.Initialize();
 
 app.Use(async (context, next) =>
 {
@@ -70,7 +71,7 @@ app.Use(async (context, next) =>
     var remoteIp = context.Connection.RemoteIpAddress.ToString();
     logger.LogInformation($"Starting: {requestPath} | Method: {requestMethod} | RemoteIp: {remoteIp} _______________________________________________________________");
     logger.LogInformation($"Headers: {string.Join(" | ", context.Request.Headers.ToArray())} _______________________________________________________________");
-    
+
     await next.Invoke();
 
     var responseStatusCode = context.Response.StatusCode;

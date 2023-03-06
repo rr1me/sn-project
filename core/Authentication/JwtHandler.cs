@@ -11,10 +11,12 @@ public class JwtHandler
 
     private readonly ES256Algorithm accessTokenAlgorithm;
     private readonly ES256Algorithm refreshTokenAlgorithm;
+    private readonly ILogger<JwtHandler> _logger;
 
-    public JwtHandler(IConfiguration config)
+    public JwtHandler(IConfiguration config, ILogger<JwtHandler> logger)
     {
         _config = config;
+        _logger = logger;
 
         accessTokenAlgorithm = GenerateES256Algorithm("ECKeysForAccessToken");
         refreshTokenAlgorithm = GenerateES256Algorithm("ECKeysRefreshToken");
@@ -55,17 +57,7 @@ public class JwtHandler
         return JwtBuilder.Create().WithAlgorithm(refreshTokenAlgorithm)
             .AddClaim("exp", refreshTokenExpires.ToUnixTimeSeconds())
             .AddClaim("username", user.Username)
-            .Encode();;
-    }
-
-    public IDictionary<string, object> DecodeToken(string token, TokenType type)
-    {
-        var algorithm = type == TokenType.Access ? accessTokenAlgorithm : refreshTokenAlgorithm;
-
-        return JwtBuilder.Create()
-            .WithAlgorithm(algorithm)
-            .MustVerifySignature()
-            .Decode<IDictionary<string, object>>(token);
+            .Encode();
     }
 
     public bool TryDecodeToken(string token, TokenType type, out IDictionary<string, object> payload)
@@ -81,7 +73,7 @@ public class JwtHandler
         }
         catch (Exception e)
         {
-            Console.WriteLine("Decode exception: " + e.Message);
+            _logger.LogWarning("Decode exception: " + e.Message);
             payload = null;
             return false;
         }

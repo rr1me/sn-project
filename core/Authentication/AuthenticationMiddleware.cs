@@ -53,12 +53,6 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
         }
         else if (!accessTokenPayload["username"].ToString()!.Equals(refreshTokenPayload["username"].ToString()))
         {
-            Console.WriteLine(accessTokenPayload["username"]);
-            Console.WriteLine(refreshTokenPayload["username"]);
-            
-            Console.WriteLine(accessTokenPayload["username"] == refreshTokenPayload["username"]);
-            Console.WriteLine(accessTokenPayload["username"].ToString()!.Equals(refreshTokenPayload["username"].ToString()!));
-            
             var firstUser = _db.Users.FirstOrDefault(x => x.Username == accessTokenPayload["username"].ToString());
             if (firstUser != null)
                 firstUser.RefreshToken = null;
@@ -68,7 +62,7 @@ public class AuthenticationMiddleware : AuthenticationHandler<GatewayAuthScheme>
             if (secondUser != null)
                 secondUser.RefreshToken = null;
 
-            _db.SaveChangesAsync();
+            await _db.SaveChangesAsync();
             DeleteCookies();
             return AuthenticateResult.Fail("Both tokens challenged");
         }

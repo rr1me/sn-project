@@ -1,11 +1,11 @@
-﻿using System.Text.RegularExpressions;
-using core.Data;
+﻿using core.Data;
 
 namespace core;
 
 public class InternalControls
 {
-    private readonly string[] _randomChars = {
+    private readonly string[] _randomChars =
+    {
         "ABCDEFGHJKLMNOPQRSTUVWXYZ",
         "abcdefghijkmnopqrstuvwxyz",
         "0123456789",
@@ -13,10 +13,12 @@ public class InternalControls
     };
 
     private readonly IServiceProvider _serviceProvider;
-    
-    public InternalControls(IServiceProvider serviceProvider)
+    private readonly ILogger<InternalControls> _logger;
+
+    public InternalControls(IServiceProvider serviceProvider, ILogger<InternalControls> logger)
     {
         _serviceProvider = serviceProvider;
+        _logger = logger;
     }
 
     public void Initialize()
@@ -39,9 +41,7 @@ public class InternalControls
         }
 
         db.SaveChanges();
-        Console.WriteLine("Root user credentials(Username | Password): root | "+unencrypted);
-        
-        new Task(ConsoleReader).Start();
+        _logger.LogInformation("Root user credentials(Username | Password): root | " + unencrypted);
     }
 
     private string GeneratePass(out string unencrypted)
@@ -59,51 +59,4 @@ public class InternalControls
     }
 
     private string CryptPass(string pass) => BCrypt.Net.BCrypt.HashPassword(pass);
-
-    private string RandomizeOrNot(string password, out string? actualPass)
-    {
-        var isRand = password.Equals("$random");
-        
-        if (isRand) return GeneratePass(out actualPass);
-
-        actualPass = password;
-        return CryptPass(password);
-    }
-
-    private void ConsoleReader()
-    {
-        Thread.Sleep(1000);
-        Console.WriteLine("You can register new user by typing '/reg `login` `password` `role(admin|user)`'.\nType `$random` in password field to make it random.");
-        while (true)
-        {
-            var t = Console.ReadLine();
-            var fields = Regex.Match(t, @"\/reg\s(.+)\s(.+)\s(.+)");
-            var username = fields.Groups[1].Value;
-            var password = fields.Groups[2].Value;
-            var role = fields.Groups[3].Value;
-
-            if (!Enum.TryParse(role, true, out Roles actualRole))
-            {
-                Console.WriteLine("Unable to find role, try again.");
-            }
-            else
-            {
-                var user = new UserEntity(username, RandomizeOrNot(password, out var actualPass), actualRole);
-
-                var db = _serviceProvider.GetRequiredService<DatabaseContext>();
-                try
-                {
-                    db.Users.Add(user);
-                    db.SaveChanges();
-                
-                    Thread.Sleep(100);
-                    Console.WriteLine("User registered: " + username + " | " + actualPass);
-                }
-                catch (InvalidOperationException)
-                {
-                    Console.WriteLine("User with this username already exist in database.");
-                }
-            }
-        }
-    }
 }
