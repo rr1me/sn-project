@@ -28,7 +28,8 @@ public class BotRunner
             .AddSingleton<CommandService>()
             .AddSingleton<Settings>()
             .AddSingleton<Events>()
-            .AddSingleton<Miscellaneous>();
+            .AddSingleton<Miscellaneous>()
+            .AddSingleton<ReactionChecker>();
 
         _builder = builder;
     }
