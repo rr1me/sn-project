@@ -9,6 +9,7 @@
     <ItemGroup>
       <PackageReference Include="Discord.Net.Commands" Version="3.8.1" />
       <PackageReference Include="Discord.Net.WebSocket" Version="3.8.1" />
+      <PackageReference Include="NReco.Logging.File" Version="1.1.6" />
     </ItemGroup>
 
 </Project>

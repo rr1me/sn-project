@@ -28,7 +28,7 @@ public class ReactionChecker
         foreach (var reactionsKey in msg.Reactions.Keys)
         {
             var users = await msg.GetReactionUsersAsync(reactionsKey, limit: 100).FlattenAsync();
-
+        
             var emote = reactionsKey as Emote;
             var roleId = _settingsEntity.EmoteAndRole[$"<:{emote.Name}:{emote.Id}>"];
             
@@ -36,7 +36,7 @@ public class ReactionChecker
             {
                 var socketGuildUser = channel.GetUser(user.Id);
                 if (socketGuildUser == null) continue;
-
+        
                 var doesUserHaveThisRole = socketGuildUser.Roles.Any(x => x.Id == roleId);
                 if (doesUserHaveThisRole || user.IsBot) continue;
                 

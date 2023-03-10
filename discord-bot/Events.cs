@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System.Reflection;
+using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
 using discordBot.Data;
@@ -15,22 +16,24 @@ public class Events
     private readonly Miscellaneous _miscellaneous;
     private readonly Settings _settings;
 
+    private readonly ILogger<Events> _logger;
 
-    public Events(DiscordSocketClient client, CommandService commands, Miscellaneous miscellaneous, Settings settings, IServiceProvider serviceProvider)
+
+    public Events(DiscordSocketClient client, CommandService commands, Miscellaneous miscellaneous, Settings settings, IServiceProvider serviceProvider, ILogger<Events> logger)
     {
         _client = client;
         _commands = commands;
         _miscellaneous = miscellaneous;
         _settings = settings;
         _serviceProvider = serviceProvider;
+        _logger = logger;
     }
 
     public async Task OnMessageReceived(SocketMessage messageParam)
     {
-        var message = messageParam as SocketUserMessage;
-        if (message == null) return;
+        if (messageParam is not SocketUserMessage message) return;
         
-        int argPos = 0;
+        var argPos = 0;
 
         if (!(message.HasCharPrefix('!', ref argPos) || message.HasMentionPrefix(_client.CurrentUser, ref argPos)) || message.Author.IsBot)
             return;
@@ -42,16 +45,15 @@ public class Events
     
     public async Task OnReady() => _miscellaneous.CompareSettings();
 
-    public Task OnUserJoined(SocketGuildUser user) => 
-        Task.Run(async () => 
-        {
-            var _settingsEntity = _settings._settingsEntity;
+    public async Task OnUserJoined(SocketGuildUser user)
+    {
+        var _settingsEntity = _settings._settingsEntity;
             
-            var channel = _client.GetChannel(_settingsEntity.MentionChannelId) as IMessageChannel;
-            var msg = await channel.SendMessageAsync(user.Mention);
+        var channel = _client.GetChannel(_settingsEntity.MentionChannelId) as IMessageChannel;
+        var msg = await channel.SendMessageAsync(user.Mention);
     
-            msg.DeleteAsync();
-        });
+        msg.DeleteAsync();
+    }
     
     public Func<Cacheable<IUserMessage, ulong>, Cacheable<IMessageChannel, ulong>, SocketReaction, Task> GetReactionMethod(bool isAdded) 
         => async (_, _, socketReaction) =>
@@ -69,6 +71,23 @@ public class Events
             else
                 user.RemoveRoleAsync(emoteAndRole[emoteId]);
         };
-    
-    public async Task Log(LogMessage log) => Console.WriteLine(log);
+
+    public async Task Log(LogMessage log)
+    {
+        void LogMethod(string msg)
+        {
+            var lvl = log.Severity;
+            if (lvl is LogSeverity.Debug or LogSeverity.Info)
+            {
+                _logger.LogInformation(msg);
+                return;
+            }
+            _logger.LogWarning(msg);
+            
+        }
+        LogMethod($"{log.Source} | {log.Message}");
+        
+        var exp = log.Exception;
+        if (exp == null) LogMethod(exp.ToString());
+    }
 }
