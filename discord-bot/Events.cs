@@ -42,7 +42,7 @@ public class Events
 
         var context = new SocketCommandContext(_client, message);
 
-        await _commands.ExecuteAsync(context: context, argPos: argPos, services: _serviceProvider);
+        _commands.ExecuteAsync(context: context, argPos: argPos, services: _serviceProvider);
     }
 
     public async Task OnReady() => _miscellaneous.CompareSettings();
